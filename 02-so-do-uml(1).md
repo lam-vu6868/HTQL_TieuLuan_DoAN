@@ -1,13 +1,14 @@
 # HTTT07 — Sơ đồ UML
 
-Sáu sơ đồ PlantUML mô tả hai quy trình của HTTT07. Để xem một sơ đồ, sao chép cả khối từ dòng @startuml đến dòng @enduml vào trình xem PlantUML.
+Tám sơ đồ PlantUML mô tả hai quy trình và các hoạt động của Quản lý trong HTTT07. Để xem một sơ đồ, sao chép cả khối từ dòng @startuml đến dòng @enduml vào trình xem PlantUML.
 
 | Mục | Sơ đồ | Cách đọc |
 | --- | --- | --- |
 | 1 | Use Case | Nhìn theo vai trò và nhóm chức năng. |
 | 2 | Lớp | Bắt đầu từ Hồ sơ đăng ký, sau đó xem từng nhánh. |
 | 3.1–3.2 | Tuần tự | Đọc từ gửi hồ sơ đến quyết định của giảng viên. |
-| 4.1–4.2 | Hoạt động | Đọc từ trên xuống theo ba giai đoạn. |
+| 4.1–4.2 | Hoạt động | Tiểu luận và Đồ án từ đăng ký đến kết quả. |
+| 4.3–4.4 | Hoạt động của Quản lý | Cấp tài khoản, thiết lập lớp, quản lý đợt và lịch bảo vệ. |
 
 ## 1. Use Case tổng thể
 
@@ -409,6 +410,111 @@ partition #E9F7F2 "03  Bảo vệ và kết quả" {
 stop
 @enduml
 ```
+
+### 4.3. Quản lý cấp tài khoản và thiết lập lớp học phần
+
+Quản lý đã đăng nhập. Đây là luồng chuẩn bị dữ liệu trước khi sinh viên và giảng viên bắt đầu sử dụng các chức năng Tiểu luận. Có thể dùng lại tài khoản và môn học đã có.
+
+```plantuml
+@startuml
+title HTTT07 • Quản lý cấp tài khoản và thiết lập lớp
+skinparam shadowing false
+skinparam DefaultFontName SansSerif
+skinparam defaultFontColor #172B4D
+skinparam ArrowColor #587499
+skinparam ActivityBorderColor #6586AB
+skinparam ActivityBackgroundColor #FFFFFF
+skinparam ActivityDiamondBackgroundColor #FFF4DC
+skinparam ActivityDiamondBorderColor #A48347
+skinparam PartitionBorderColor #C8D8EB
+
+start
+partition #FFF5E8 "01  Chuẩn bị tài khoản" {
+  if (Cần cấp tài khoản mới?) then (Có)
+    :Quản lý nhập thông tin và chọn vai trò;
+    if (Thông tin và định danh hợp lệ?) then (Có)
+      :Hệ thống lưu tài khoản và hồ sơ tương ứng;
+    else (Không)
+      :Báo lỗi để Quản lý điều chỉnh;
+      stop
+    endif
+  else (Không)
+    :Dùng tài khoản đã có;
+  endif
+}
+
+partition #EAF3FF "02  Thiết lập lớp học phần" {
+  :Quản lý chọn hoặc tạo môn học;
+  :Tạo lớp theo học kỳ và năm học;
+  :Gán giảng viên phụ trách;
+  :Đưa sinh viên vào lớp;
+  if (Thông tin lớp và phân công hợp lệ?) then (Có)
+    :Hệ thống lưu lớp, giảng viên và danh sách lớp;
+  else (Không)
+    :Báo lỗi để Quản lý điều chỉnh;
+    stop
+  endif
+}
+
+partition #E9F7F2 "03  Dữ liệu sẵn sàng sử dụng" {
+  :Giảng viên thấy lớp mình phụ trách;
+  :Sinh viên thấy lớp mình đang học;
+}
+stop
+@enduml
+```
+
+### 4.4. Quản lý đợt Đồ án và lịch bảo vệ
+
+Quản lý thực hiện hai việc ở hai thời điểm. Đợt được thiết lập trước khi sinh viên đăng ký. Lịch bảo vệ được xếp sau khi có hồ sơ đủ điều kiện.
+
+```plantuml
+@startuml
+title HTTT07 • Quản lý đợt Đồ án và lịch bảo vệ
+skinparam shadowing false
+skinparam DefaultFontName SansSerif
+skinparam defaultFontColor #172B4D
+skinparam ArrowColor #587499
+skinparam ActivityBorderColor #6586AB
+skinparam ActivityBackgroundColor #FFFFFF
+skinparam ActivityDiamondBackgroundColor #FFF4DC
+skinparam ActivityDiamondBorderColor #A48347
+skinparam PartitionBorderColor #C8D8EB
+
+start
+partition #FFF5E8 "01  Thiết lập đợt Đồ án" {
+  :Quản lý tạo đợt Đồ án;
+  :Đặt thời gian đăng ký và các mốc nộp;
+  if (Kế hoạch hợp lệ?) then (Có)
+    :Hệ thống lưu đợt và kế hoạch;
+  else (Không)
+    :Báo lỗi để Quản lý điều chỉnh;
+    stop
+  endif
+}
+
+partition #F3F5F8 "02  Khi có hồ sơ để xếp lịch" {
+  :Quản lý chọn hồ sơ thuộc đợt;
+  if (Hồ sơ đã duyệt và đủ điều kiện bảo vệ?) then (Có)
+    :Tạo hoặc chọn hội đồng và thành viên;
+    :Chọn thời gian và địa điểm;
+    :Phân công giảng viên nhập điểm hội đồng;
+    :Hệ thống lưu lịch và phân công;
+  else (Không)
+    :Hiển thị lý do hồ sơ chưa được xếp lịch;
+    stop
+  endif
+}
+
+partition #E9F7F2 "03  Sử dụng lịch đã lưu" {
+  :Sinh viên xem lịch bảo vệ;
+  :Giảng viên được phân công có thể nhập điểm sau khi hội đồng chấm;
+}
+stop
+@enduml
+```
+
+Quản lý có thể xem thống kê theo đợt ở bất kỳ thời điểm nào. Khi chưa có điểm, hồ sơ đã duyệt được tính vào nhóm chưa chấm theo phương án ERD hiện tại. Điều kiện cụ thể để hồ sơ đủ điều kiện bảo vệ cần chốt trước khi triển khai tính năng xếp lịch.
 
 ## Ghi chú nghiệp vụ
 
