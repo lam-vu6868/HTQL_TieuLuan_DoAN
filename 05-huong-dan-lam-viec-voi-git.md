@@ -66,7 +66,7 @@ Tạo nhánh mới từ `dev` đã cập nhật cho việc tiếp theo. GitHub c
 
 ## 5. Đưa bản đã kiểm thử về `main`
 
-Khi hai luồng Tiểu luận và Đồ án trên `dev` đã chạy ổn, mở Pull Request:
+Khi hai luồng Tiểu luận và Đồ án trên `dev` đã chạy ổn, mở Pull Request
 
 ```text
 base:    main
