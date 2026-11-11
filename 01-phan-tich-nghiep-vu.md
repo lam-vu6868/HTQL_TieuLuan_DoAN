@@ -15,10 +15,10 @@ Cả hai quy trình cho phép chọn đề tài có sẵn hoặc tự đề xu�
 
 | Vai trò nghiệp vụ | Quyền và phạm vi |
 | --- | --- |
-| Sinh viên | Xem lớp mình đang học và đợt đồ án đang mở. Đăng ký, nộp báo cáo và xem kết quả của hồ sơ cá nhân. Với hồ sơ nhóm, xem đề tài, bài nộp, nhận xét và kết quả của nhóm mình. |
-| Nhóm trưởng | Có các quyền của Sinh viên. Trong nhóm mình phụ trách, quản lý thành viên, gửi đăng ký và nộp báo cáo thay mặt nhóm. |
+| Sinh viên | Xem lớp mình đang học và đợt đồ án đang mở. Đăng ký, xác nhận lời mời vào nhóm, nộp báo cáo và xem kết quả đã công bố của hồ sơ cá nhân. Với hồ sơ nhóm, xem đề tài, bài nộp, nhận xét và kết quả đã công bố của nhóm mình. |
+| Nhóm trưởng | Có các quyền của Sinh viên. Trong nhóm mình phụ trách, mời thành viên, chuyển quyền trưởng nhóm cho thành viên đã xác nhận, gửi đăng ký và nộp báo cáo thay mặt nhóm. |
 | Giảng viên | Trong lớp được phân công, cấu hình giới hạn nhóm và các mốc nộp, duyệt đề tài, nhận xét, chấm và xem thống kê Tiểu luận. Trong đợt Đồ án tốt nghiệp, xét hồ sơ gửi đến mình và nhận xét hồ sơ đã nhận hướng dẫn. Quyền nhập điểm bảo vệ theo phân công. |
-| Quản lý | Cấp tài khoản, quản lý môn học và lớp học phần, gán giảng viên phụ trách, xếp sinh viên vào lớp, quản lý đợt đồ án và phân công người nhập điểm bảo vệ. |
+| Quản lý | Cấp tài khoản, quản lý môn học và lớp học phần, gán giảng viên phụ trách, xếp sinh viên vào lớp, quản lý đợt đồ án, phân công người nhập điểm bảo vệ, xác nhận vắng bảo vệ và duyệt công bố điểm. |
 
 Tài khoản có ba vai trò là Sinh viên, Giảng viên và Quản lý. Nhóm trưởng là quyền trong từng nhóm. Cùng một sinh viên có thể là nhóm trưởng ở lớp này và là thành viên ở lớp khác. API kiểm tra vai trò và quan hệ với đối tượng đang xử lý.
 
@@ -34,10 +34,10 @@ Ví dụ, nếu môn Lập trình Web có hai lớp WEB01 và WEB02 do hai giả
 ## 4. Quy trình Tiểu luận
 
 1. Giảng viên phụ trách đặt số thành viên tối thiểu và tối đa, thời gian đăng ký và hạn nộp của từng mốc.
-2. Sinh viên chọn lớp học phần đang học. Nếu làm nhóm, nhóm trưởng lập nhóm và thêm thành viên cùng lớp. Mỗi sinh viên tham gia tối đa một nhóm trong cùng lớp học phần.
+2. Sinh viên chọn lớp học phần đang học. Nếu làm nhóm, nhóm trưởng lập nhóm và mời thành viên cùng lớp; người được mời phải xác nhận mới được tính vào nhóm. Mỗi sinh viên tham gia tối đa một nhóm trong cùng lớp học phần. Chỉ nhóm trưởng hiện tại được chuyển quyền trưởng nhóm cho thành viên đã xác nhận.
 3. Sinh viên làm cá nhân hoặc nhóm trưởng chọn đề tài có sẵn của lớp hay tự đề xuất, rồi gửi đăng ký. Hệ thống kiểm tra tư cách tham gia lớp và số thành viên trước khi nhận hồ sơ.
-4. Giảng viên phụ trách duyệt hoặc từ chối đăng ký. Nếu hồ sơ được duyệt, sinh viên hoặc nhóm trưởng nộp file báo cáo theo từng mốc.
-5. Giảng viên xem báo cáo, ghi nhận xét và nhập điểm Tiểu luận. Hệ thống thống kê theo số sinh viên trong lớp, kể cả khi bài được nộp theo nhóm.
+4. Giảng viên phụ trách duyệt hoặc từ chối đăng ký. Nếu bị từ chối, người gửi có thể sửa hồ sơ cũ rồi gửi lại hoặc tạo hồ sơ mới trong thời gian đăng ký. Nếu hồ sơ được duyệt, sinh viên hoặc nhóm trưởng nộp file báo cáo theo từng mốc.
+5. Giảng viên xem báo cáo, ghi nhận xét và nhập điểm Tiểu luận. Quản lý duyệt công bố điểm trước khi sinh viên xem kết quả. Hệ thống thống kê theo số sinh viên trong lớp, kể cả khi bài được nộp theo nhóm.
 
 Giới hạn hợp lệ có số tối thiểu từ 1 trở lên và tối đa bằng hoặc lớn hơn tối thiểu. Nhóm trưởng được tính vào tổng số thành viên.
 
@@ -47,17 +47,17 @@ Giới hạn hợp lệ có số tối thiểu từ 1 trở lên và tối đa b
 | 1–4 | Cá nhân hoặc nhóm 2–4 người |
 | 2–4 | Nhóm 2–4 người |
 
-Theo phương án bản đầu, nhóm có thể lưu nháp khi thiếu thành viên. Hệ thống chặn thêm người khi đã đủ tối đa và kiểm tra lại toàn bộ điều kiện lúc gửi.
+Nhóm có thể lưu nháp khi thiếu thành viên. Lời mời chưa được xác nhận không tính vào sĩ số. Hệ thống chặn thêm người khi đã đủ tối đa và kiểm tra lại toàn bộ điều kiện lúc gửi. Sau khi gửi hồ sơ, danh sách thành viên được giữ cố định để điểm gắn đúng người.
 
 ## 5. Quy trình Đồ án tốt nghiệp
 
 1. Sinh viên chọn đợt đồ án đang mở và chọn giảng viên hướng dẫn. Sinh viên chọn đề tài có sẵn của giảng viên đó hoặc tự đề xuất.
-2. Giảng viên được chọn xét hồ sơ. Khi duyệt, giảng viên xác nhận nhận hướng dẫn đề tài.
-3. Sinh viên nộp báo cáo theo từng mốc của đợt. Giảng viên hướng dẫn theo dõi và nhận xét tiến độ.
+2. Giảng viên được chọn xét hồ sơ. Khi duyệt, giảng viên xác nhận nhận hướng dẫn đề tài. Nếu bị từ chối, sinh viên có thể sửa hồ sơ cũ rồi gửi lại hoặc tạo hồ sơ mới trong thời gian đăng ký.
+3. Sinh viên nộp báo cáo theo từng mốc của đợt. Sinh viên được thay file đã nộp; bài nộp sau hạn mang trạng thái trễ. Giảng viên hướng dẫn theo dõi và nhận xét tiến độ.
 4. Sinh viên nộp báo cáo cuối và bảo vệ trước hội đồng. Hệ thống ghi lịch và hội đồng của buổi bảo vệ.
-5. Hội đồng chấm. Người được phân quyền nhập điểm tổng hợp của hội đồng. Hệ thống thống kê kết quả theo số sinh viên trong đợt.
+5. Hội đồng chấm. Người được phân quyền nhập điểm tổng hợp của hội đồng. Quản lý duyệt công bố điểm trước khi sinh viên xem kết quả. Nếu sinh viên vắng bảo vệ, Quản lý xác nhận vắng và kết quả là không đạt. Chưa nhập điểm hoặc chưa xác nhận vắng vẫn là chưa chấm.
 
-Cả hai luồng ghi nhận thời điểm nộp file và gắn mỗi bài nộp với đúng hồ sơ và mốc báo cáo. Thống kê tách ba nhóm là **đạt**, **không đạt** và **chưa chấm**.
+Cả hai luồng cho phép thay file đã nộp, ghi nhận thời điểm nộp mới nhất và gắn bài nộp với đúng hồ sơ và mốc báo cáo. Bài nộp sau hạn được nhận và đánh dấu **trễ**. Thống kê tách ba nhóm là **đạt**, **không đạt** và **chưa chấm**; điểm chưa được Quản lý công bố không hiển thị cho sinh viên.
 
 ## 6. Công nghệ và thiết kế hướng đối tượng
 
@@ -82,5 +82,5 @@ Ví dụ, khi trưởng nhóm gửi đăng ký Tiểu luận, route gọi lớp 
 | --- | --- |
 | Điểm Tiểu luận theo nhóm | Một điểm chung cho cả nhóm. Khi thống kê, nhóm 4 người đạt được tính là 4 sinh viên đạt. |
 | Nhập điểm bảo vệ | Quản lý phân công thư ký hoặc giảng viên được phép nhập một điểm tổng hợp của hội đồng. |
-| Ngưỡng đạt và nộp trễ | Xác nhận theo yêu cầu của môn trước khi áp dụng điều kiện tính kết quả và khóa nộp. |
-| Chức năng bổ sung | Ưu tiên nhánh giảng viên yêu cầu chỉnh sửa đề tài và sinh viên gửi lại hồ sơ. |
+| Ngưỡng đạt và thang điểm | Xác nhận theo yêu cầu của môn trước khi tính kết quả. Bài nộp trễ vẫn được nhận và đánh dấu trễ. |
+| Chức năng bổ sung | Giảng viên yêu cầu chỉnh sửa đề tài trước khi ra quyết định duyệt hoặc từ chối. |

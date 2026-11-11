@@ -40,6 +40,7 @@ rectangle "HỆ THỐNG HTTT07" {
   }
   package "02  Tiểu luận" as ESSAY #EAF3FF {
     usecase "Lập nhóm" as TEAM
+    usecase "Xác nhận lời mời nhóm" as ACCEPT
     usecase "Quản lý thành viên" as MEMBER
     usecase "Đăng ký đề tài\nvà nộp báo cáo" as TL
     usecase "Thiết lập kế hoạch\nvà giới hạn nhóm" as PLAN
@@ -57,6 +58,7 @@ rectangle "HỆ THỐNG HTTT07" {
     usecase "Quản lý môn, lớp\nvà phân công giảng dạy" as CLASS
     usecase "Quản lý đợt, lịch bảo vệ\nvà phân công nhập điểm" as TERM
     usecase "Xem thống kê Đồ án" as STATS
+    usecase "Xác nhận vắng bảo vệ\nvà duyệt công bố điểm" as PUBLISH
   }
 }
 
@@ -64,6 +66,7 @@ NT --|> SV
 SV -- LOGIN
 SV -- RESULT
 SV -- TEAM
+SV -- ACCEPT
 SV -- TL
 NT -- MEMBER
 NT -- TL
@@ -82,12 +85,13 @@ ACCOUNT -- QL
 CLASS -- QL
 TERM -- QL
 STATS -- QL
+PUBLISH -- QL
 @enduml
 ```
 
-- **Tiểu luận:** Sinh viên xem lớp mình đang học và tự đăng ký, nộp bài nếu làm cá nhân. Nhóm trưởng quản lý thành viên và thực hiện hai thao tác đó thay mặt nhóm.
-- **Đồ án:** Sinh viên xem đợt đang mở, chọn giảng viên hướng dẫn và đăng ký cá nhân. Giảng viên được phân công nhập điểm sau khi hội đồng chấm.
-- Ở cả hai luồng, người đăng ký có thể chọn đề tài có sẵn hoặc tự đề xuất.
+- **Tiểu luận:** Sinh viên xem lớp mình đang học và tự đăng ký, nộp bài nếu làm cá nhân. Người được mời xác nhận vào nhóm; chỉ nhóm trưởng hiện tại chuyển quyền trưởng nhóm, gửi hồ sơ và nộp bài thay nhóm.
+- **Đồ án:** Sinh viên xem đợt đang mở, chọn giảng viên hướng dẫn và đăng ký cá nhân. Giảng viên được phân công nhập điểm sau khi hội đồng chấm; Quản lý duyệt công bố.
+- Ở cả hai luồng, người đăng ký có thể chọn đề tài có sẵn hoặc tự đề xuất, sửa hồ sơ bị từ chối rồi gửi lại hoặc tạo hồ sơ mới trong hạn, và thay file đã nộp. Bài nộp sau hạn được đánh dấu trễ.
 
 ## 2. Sơ đồ Lớp theo hướng đối tượng
 
@@ -120,6 +124,7 @@ abstract class HoSoDangKy as "Hồ sơ đăng ký" #FFF4DC {
   +gui()
   +duyet()
   +tuChoi(lyDo)
+  +suaSauTuChoi()
 }
 class DeTai as "Đề tài" {
   -ten: str
@@ -141,7 +146,9 @@ class LopHocPhan as "Lớp học phần" #EAF3FF {
 }
 class NhomTieuLuan as "Nhóm Tiểu luận" #EAF3FF {
   -truongNhom: SinhVien
-  +themThanhVien(sv)
+  +moiThanhVien(sv)
+  +xacNhanLoiMoi(sv)
+  +chuyenTruongNhom(sv)
   +duDieuKienGui(): bool
 }
 class DotDoAn as "Đợt Đồ án" #E9F7F2 {
@@ -160,10 +167,15 @@ class MocNop as "Mốc nộp" {
 class BaiNop as "Bài nộp" {
   -tepBaoCao: str
   -thoiDiemNop: datetime
+  -nopTre: bool
+  +thayFile(tep)
   +ghiNhanXet(noiDung)
 }
 class KetQua as "Kết quả" {
-  -diemCuoi: decimal
+  -diemCuoi: decimal?
+  -vangBaoVe: bool
+  -trangThaiCongBo: TrangThaiCongBo
+  +congBo()
   +dat(nguong): bool
 }
 
@@ -191,7 +203,7 @@ DotDoAn -[hidden]right- BuoiBaoVe
 | Mũi tên tam giác rỗng | Kế thừa. Hai loại hồ sơ dùng chung các thao tác của Hồ sơ đăng ký. |
 | Số ở đầu đường nối | Số lượng. Ví dụ, một hồ sơ có từ 0 đến nhiều bài nộp và từ 0 đến 1 kết quả. |
 
-Hồ sơ Tiểu luận lấy người duyệt từ giảng viên phụ trách lớp. Hồ sơ có một người làm cá nhân hoặc một nhóm. Hồ sơ Đồ án lấy người duyệt từ giảng viên được sinh viên chọn. Mỗi mốc nộp thuộc một lớp học phần hoặc một đợt đồ án.
+Hồ sơ Tiểu luận lấy người duyệt từ giảng viên phụ trách lớp. Hồ sơ có một người làm cá nhân hoặc một nhóm. Hồ sơ Đồ án lấy người duyệt từ giảng viên được sinh viên chọn. Mỗi mốc nộp thuộc một lớp học phần hoặc một đợt đồ án. Quản lý là người duy nhất được công bố kết quả hoặc xác nhận vắng bảo vệ.
 
 Bản tổng quan tập trung vào các lớp trực tiếp xử lý hai quy trình. Tài khoản, Sinh viên, Giảng viên, Môn học, Hội đồng và Dịch vụ đăng ký là các lớp hỗ trợ trong thiết kế chi tiết. Số bảng và các khóa PostgreSQL được xác định trong ERD.
 
@@ -250,6 +262,7 @@ else Từ chối
   API -> DB: Ghi TỪ CHỐI và lý do
 end
 API --> UI: Trả kết quả xét duyệt
+note over SV,UI: Nếu bị từ chối, trong hạn đăng ký người gửi\nchọn sửa hồ sơ cũ rồi gửi lại hoặc tạo hồ sơ mới.
 @enduml
 ```
 
@@ -304,6 +317,7 @@ else Từ chối
   API -> DB: Ghi TỪ CHỐI và lý do
 end
 API --> UI: Trả kết quả xét duyệt
+note over SV,UI: Nếu bị từ chối, trong hạn đăng ký sinh viên\nchọn sửa hồ sơ cũ rồi gửi lại hoặc tạo hồ sơ mới.
 @enduml
 ```
 
@@ -329,7 +343,9 @@ partition #EAF3FF "01  Chuẩn bị và đăng ký" {
   :Giảng viên đặt hạn và giới hạn nhóm;
   :Sinh viên chọn lớp mình đang học;
   if (Làm nhóm?) then (Có)
-    :Nhóm trưởng thêm thành viên cùng lớp;
+    :Nhóm trưởng mời thành viên cùng lớp;
+    :Thành viên xác nhận lời mời;
+    :Nhóm trưởng hiện tại có thể chuyển quyền;
   else (Cá nhân)
     :Sinh viên chuẩn bị hồ sơ cá nhân;
   endif
@@ -348,14 +364,17 @@ partition #F3F5F8 "02  Xét duyệt" {
     :Hệ thống ghi đã duyệt;
   else (Từ chối)
     :Hệ thống ghi từ chối và lý do;
+    :Hiện hai lựa chọn sửa hồ sơ cũ hoặc tạo hồ sơ mới trong hạn;
     stop
   endif
 }
 
 partition #E9F7F2 "03  Nộp bài và kết quả" {
   :Sinh viên hoặc nhóm trưởng nộp báo cáo theo mốc;
-  :Hệ thống ghi file, mốc và thời điểm nộp;
+  :Có thể thay file; hệ thống ghi lần nộp mới nhất và trạng thái trễ;
   :Giảng viên nhận xét và nhập điểm cuối;
+  :Quản lý duyệt công bố điểm;
+  :Sinh viên xem điểm đã công bố;
   :Hệ thống thống kê theo số sinh viên trong lớp;
 }
 stop
@@ -395,17 +414,29 @@ partition #F3F5F8 "02  Xét duyệt và theo dõi" {
     :Hệ thống ghi đã duyệt và xác nhận người hướng dẫn;
   else (Từ chối)
     :Hệ thống ghi từ chối và lý do;
+    :Hiện hai lựa chọn sửa hồ sơ cũ hoặc tạo hồ sơ mới trong hạn;
     stop
   endif
-  :Sinh viên nộp báo cáo theo mốc và báo cáo cuối;
+  :Sinh viên nộp hoặc thay file theo mốc và báo cáo cuối;
+  :Hệ thống đánh dấu trễ nếu lần nộp mới nhất quá hạn;
   :Giảng viên hướng dẫn nhận xét tiến độ;
 }
 
 partition #E9F7F2 "03  Bảo vệ và kết quả" {
   :Quản lý ghi lịch, hội đồng và người nhập điểm;
-  :Sinh viên bảo vệ, hội đồng chấm điểm;
-  :Người được phân công nhập điểm tổng hợp;
-  :Hệ thống lưu điểm và thống kê theo đợt;
+  if (Sinh viên vắng bảo vệ?) then (Có)
+    :Quản lý xác nhận vắng, kết quả không đạt;
+  else (Không)
+    :Sinh viên bảo vệ, hội đồng chấm điểm;
+    :Người được phân công nhập điểm tổng hợp;
+  endif
+  if (Đã có điểm hoặc xác nhận vắng?) then (Có)
+    :Quản lý duyệt công bố kết quả;
+    :Sinh viên xem kết quả đã công bố;
+  else (Chưa)
+    :Giữ trạng thái chưa chấm;
+  endif
+  :Hệ thống cập nhật thống kê theo đợt;
 }
 stop
 @enduml
@@ -466,7 +497,7 @@ stop
 
 ### 4.4. Quản lý đợt Đồ án và lịch bảo vệ
 
-Quản lý thực hiện hai việc ở hai thời điểm. Đợt được thiết lập trước khi sinh viên đăng ký. Lịch bảo vệ được xếp sau khi có hồ sơ đủ điều kiện.
+Quản lý thực hiện hai việc ở hai thời điểm. Đợt được thiết lập trước khi sinh viên đăng ký. Lịch bảo vệ được xếp cho hồ sơ đã duyệt.
 
 ```plantuml
 @startuml
@@ -495,7 +526,7 @@ partition #FFF5E8 "01  Thiết lập đợt Đồ án" {
 
 partition #F3F5F8 "02  Khi có hồ sơ để xếp lịch" {
   :Quản lý chọn hồ sơ thuộc đợt;
-  if (Hồ sơ đã duyệt và đủ điều kiện bảo vệ?) then (Có)
+  if (Hồ sơ đã duyệt?) then (Có)
     :Tạo hoặc chọn hội đồng và thành viên;
     :Chọn thời gian và địa điểm;
     :Phân công giảng viên nhập điểm hội đồng;
@@ -508,17 +539,19 @@ partition #F3F5F8 "02  Khi có hồ sơ để xếp lịch" {
 
 partition #E9F7F2 "03  Sử dụng lịch đã lưu" {
   :Sinh viên xem lịch bảo vệ;
-  :Giảng viên được phân công có thể nhập điểm sau khi hội đồng chấm;
+  :Giảng viên được phân công nhập điểm sau khi hội đồng chấm;
+  :Quản lý xác nhận vắng nếu sinh viên không bảo vệ;
+  :Quản lý duyệt công bố kết quả đã có điểm hoặc đã xác nhận vắng;
 }
 stop
 @enduml
 ```
 
-Quản lý có thể xem thống kê theo đợt ở bất kỳ thời điểm nào. Khi chưa có điểm, hồ sơ đã duyệt được tính vào nhóm chưa chấm theo phương án ERD hiện tại. Điều kiện cụ thể để hồ sơ đủ điều kiện bảo vệ cần chốt trước khi triển khai tính năng xếp lịch.
+Quản lý có thể xem thống kê theo đợt ở bất kỳ thời điểm nào. Hồ sơ đã duyệt chưa có điểm và chưa được xác nhận vắng được tính vào nhóm chưa chấm, kể cả khi đã qua giờ bảo vệ. Chỉ kết quả đã được Quản lý công bố mới hiển thị cho sinh viên.
 
 ## Ghi chú nghiệp vụ
 
-- Tiểu luận kiểm tra người gửi, tư cách thuộc lớp, thời gian đăng ký và số thành viên. Nhóm trưởng được tính vào sĩ số.
+- Tiểu luận kiểm tra người gửi, tư cách thuộc lớp, thời gian đăng ký và số thành viên đã xác nhận. Nhóm trưởng được tính vào sĩ số; chỉ nhóm trưởng hiện tại được chuyển quyền cho thành viên đã xác nhận.
 - Bản thiết kế dùng phương án một điểm chung cho nhóm Tiểu luận và một điểm tổng hợp của hội đồng cho mỗi hồ sơ Đồ án. Thống kê đếm theo sinh viên.
-- Ngưỡng đạt và cách xử lý nộp trễ cần xác nhận theo quy định của môn hoặc đợt. Nhánh yêu cầu chỉnh sửa đề tài là chức năng bổ sung.
+- Hồ sơ bị từ chối có thể sửa rồi gửi lại hoặc tạo hồ sơ mới trong hạn. Bài nộp trễ vẫn được nhận và đánh dấu trễ; được thay file. Ngưỡng đạt cần xác nhận. Nhánh giảng viên yêu cầu sửa trước khi quyết định là chức năng bổ sung.
 

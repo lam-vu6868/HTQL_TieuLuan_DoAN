@@ -58,6 +58,6 @@ Mở [màn hình kiểm tra tại cổng 5173](http://127.0.0.1:5173). Khi cả 
 | `backend/app/database.py` | Lớp `Database` quản lý kết nối và truy vấn kiểm tra. |
 | `backend/app/main.py` | Khởi tạo FastAPI và cung cấp hai endpoint kiểm tra. |
 | `frontend/src/App.jsx` | Gọi hai endpoint và hiển thị riêng trạng thái API, cơ sở dữ liệu. |
-| `docs/` | [Nghiệp vụ](docs/01-phan-tich-nghiep-vu.md), [PlantUML](docs/02-so-do-uml.md) và [kế hoạch triển khai](docs/03-ke-hoach-trien-khai.md). |
+| Tài liệu ở thư mục gốc | [Nghiệp vụ](01-phan-tich-nghiep-vu.md), [PlantUML](02-so-do-uml(1).md), [kế hoạch triển khai](03-ke-hoach-trien-khai.md) và [thiết kế dữ liệu](04-thiet-ke-co-so-du-lieu.md). |
 
 Bước tiếp theo của chặng 1 là chốt ERD và migration nền. Đăng nhập JWT và phân quyền thuộc chặng 2.
