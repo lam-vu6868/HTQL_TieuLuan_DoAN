@@ -9,3 +9,4 @@ Thư mục này sẽ chứa kiểm thử khi bắt đầu viết logic. Ưu tiê
 - Chưa có điểm là chưa chấm; Quản lý xác nhận vắng và duyệt công bố trước khi sinh viên xem điểm.
 
 Chưa có file test chạy được vì bộ khung chưa có logic để kiểm tra.
+Khi thêm test API và service, dùng client/fixture hỗ trợ async và kiểm tra cả commit/rollback với AsyncSession.

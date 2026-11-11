@@ -1,5 +1,19 @@
-# Gói Python của BE.
-# 1. Khi làm chặng 1, thêm FastAPI, ASGI server, SQLAlchemy và PostgreSQL driver.
-# 2. Khi làm JWT/migration/test, thêm gói cần dùng với phiên bản cố định.
-# 3. Sau khi cài, chạy kiểm thử và ghi lệnh cài đặt trong BE/README.md.
-# Hiện chưa có mã chạy nên chưa khóa phiên bản gói nào.
+# Thư viện Python dùng chung cho BE và công cụ migration trong DB.
+# Cài một lần theo lệnh trong BE/README.md; PostgreSQL server phải cài riêng.
+
+# API FastAPI và máy chủ chạy ứng dụng.
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+
+# ORM, psycopg 3 hỗ trợ async và migration (không cần asyncpg).
+SQLAlchemy[asyncio]>=2.0,<3
+psycopg[binary]>=3.2,<4
+alembic>=1.18,<2
+
+# Đọc .env, JWT và băm mật khẩu bằng Argon2.
+pydantic-settings>=2.5,<3
+PyJWT>=2.9,<3
+pwdlib[argon2]>=0.2,<1
+
+# Nhận file báo cáo qua multipart/form-data.
+python-multipart>=0.0.20,<1

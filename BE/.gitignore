@@ -3,6 +3,7 @@
 # 3. Giữ storage/reports/.gitignore để thư mục rỗng vẫn nằm trong Git.
 .env
 .venv/
+venv/
 __pycache__/
 .pytest_cache/
 *.py[cod]

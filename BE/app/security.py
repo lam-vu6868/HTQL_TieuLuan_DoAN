@@ -2,6 +2,7 @@
 
 1. Viết hash_password() và verify_password(); không lưu mật khẩu gốc.
 2. Viết create_access_token() và decode_access_token() với hạn dùng rõ ràng.
-3. Viết get_current_user() lấy tài khoản từ token; từ chối token sai/hết hạn.
-4. Quyền theo lớp, nhóm hoặc hồ sơ kiểm tra thêm trong service tương ứng.
+3. Viết async def get_current_user() nếu cần await truy vấn tài khoản; từ chối token sai/hết hạn.
+4. Hàm băm mật khẩu là tác vụ CPU; chạy qua thread khi gọi từ endpoint async nếu chậm.
+5. Quyền theo lớp, nhóm hoặc hồ sơ kiểm tra thêm trong service tương ứng.
 """
