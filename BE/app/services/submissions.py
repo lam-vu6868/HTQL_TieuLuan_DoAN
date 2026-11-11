@@ -1,7 +1,8 @@
 """Quy trình nộp và thay file báo cáo.
 
-1. Tạo SubmissionService.submit_or_replace(): kiểm tra hồ sơ đã duyệt, mốc đúng phạm vi và người nộp.
+1. Viết async def SubmissionService.submit_or_replace(): kiểm tra hồ sơ đã duyệt, mốc và người nộp.
 2. So thời điểm nhận file với han_nop để ghi nop_tre; quá hạn vẫn nhận.
-3. Lưu file bằng tên do server tạo, cập nhật bài hiện hành theo (ho_so_id, moc_nop_id).
-4. Nếu ghi DB lỗi, dọn file mới; chỉ xóa file cũ sau khi thay thành công.
+3. Đọc UploadFile theo từng khối; ghi/xóa file local qua asyncio.to_thread() để không chặn event loop.
+4. Lưu bằng tên do server tạo, await repository cập nhật bài hiện hành theo (ho_so_id, moc_nop_id).
+5. Nếu ghi DB lỗi, dọn file mới; chỉ xóa file cũ sau khi thay thành công.
 """
