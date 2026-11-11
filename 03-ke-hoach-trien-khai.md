@@ -1,66 +1,46 @@
-# HTTT07 — Kế hoạch triển khai
+# HTTT07 — Kế hoạch triển khai bản đầu
 
-Triển khai theo 5 chặng. Mỗi chặng có kết quả có thể chạy hoặc kiểm tra trước khi chuyển tiếp. `FE/` dùng **ReactJS**, `BE/` dùng **FastAPI async theo OOP** và **JWT**; `DB/` giữ migration và dữ liệu mẫu cho **PostgreSQL đã cài trên máy phát triển**.
+Nhóm hai người làm luồng chạy được trước: **đăng ký → duyệt → nộp → chấm → Quản lý công bố → sinh viên xem**. Frontend ReactJS; Backend FastAPI async theo OOP và JWT; PostgreSQL. Đối chiếu [nghiệp vụ](01-phan-tich-nghiep-vu.md), [UML](02-so-do-uml.md) và [CSDL 14 bảng](04-thiet-ke-co-so-du-lieu.md).
 
-Tài liệu đối chiếu gồm [phân tích nghiệp vụ](01-phan-tich-nghiep-vu.md), [tám sơ đồ UML](02-so-do-uml(1).md) và [thiết kế cơ sở dữ liệu](04-thiet-ke-co-so-du-lieu.md).
+## Chặng 1 — Nền tảng và CSDL
 
-| Chặng | Việc chính | Đầu ra |
-| --- | --- | --- |
-| 1 | Thiết lập môi trường và thiết kế dữ liệu | React gọi được FastAPI. FastAPI kết nối được PostgreSQL. Có ERD và migration nền. |
-| 2 | Tài khoản, phân quyền và dữ liệu lớp | Quản lý cấp tài khoản, gán giảng viên và xếp sinh viên vào lớp. |
-| 3 | Tiểu luận | Demo đăng ký, duyệt, nộp báo cáo theo mốc và chấm Tiểu luận. |
-| 4 | Đồ án tốt nghiệp | Demo chọn người hướng dẫn, duyệt, nộp báo cáo, ghi lịch bảo vệ và nhập điểm hội đồng. |
-| 5 | Kiểm thử và chuẩn bị nộp | Hai luồng chạy qua giao diện. README có đủ bước để người khác tự chạy demo. |
+- [ ] Tạo ứng dụng React, FastAPI async, PostgreSQL local; cấu hình `DATABASE_URL` và JWT qua `.env`.
+- [ ] Viết model của 14 bảng và migration Alembic. Kiểm tra `AsyncSession` đọc được dữ liệu; Alembic dùng `AsyncEngine` với `run_sync()`.
+- [ ] Tạo dữ liệu demo: tài khoản Quản lý/Giảng viên/Sinh viên, lớp, đợt, phân công GVHD.
 
-## Chặng 1 — Môi trường và thiết kế dữ liệu
+**Đạt khi:** migration chạy trên CSDL trống và một trang React đọc được API kết nối PostgreSQL.
 
-- [ ] Từ bộ khung `BE/`, `DB/` và `FE/`, tạo môi trường Python và dự án ReactJS. Tạo cơ sở dữ liệu phát triển `httt07` trên PostgreSQL local và cấu hình kết nối qua biến môi trường.
-- [ ] Vẽ ERD từ nghiệp vụ. Chốt bảng, khóa chính, khóa ngoại và ràng buộc cho tài khoản, lớp học phần, lời mời nhóm, hồ sơ bị từ chối và gửi lại, mốc nộp, bài nộp trễ, bảo vệ và duyệt công bố kết quả. Xác định cách lưu hai loại hồ sơ trước khi viết migration.
-- [ ] Tạo migration nền dùng AsyncEngine và một API async kiểm tra chạy thử. Kết nối một màn hình React với API để kiểm tra đường đi từ trình duyệt đến backend. Kiểm tra kết nối PostgreSQL qua AsyncSession riêng.
-- [ ] Tổ chức backend sao cho route nhận yêu cầu, lớp nghiệp vụ kiểm tra quy tắc, và lớp truy cập dữ liệu đọc hoặc ghi PostgreSQL. Đối chiếu với trách nhiệm của các lớp trong sơ đồ UML.
+## Chặng 2 — Đăng nhập, lớp và phân công
 
-**Đạt chặng khi** migration chạy được trên database trống, FastAPI đọc được PostgreSQL và React hiển thị phản hồi từ API.
+- [ ] Quản lý cấp tài khoản, tạo môn/lớp/đợt, gán giảng viên lớp, xếp sinh viên vào lớp và gán GVHD theo sinh viên/đợt.
+- [ ] Làm đăng nhập JWT và email đặt lại mật khẩu một lần, có hạn dùng; kiểm tra quyền theo vai trò và đối tượng. Sinh viên xem lớp/đợt của mình; giảng viên xem hồ sơ trong phạm vi phân công.
 
-## Chặng 2 — Tài khoản, phân quyền và lớp học phần
+**Đạt khi:** cả ba vai trò đăng nhập; giảng viên khác lớp hoặc khác phân công GVHD không thể xét hồ sơ.
 
-- [ ] Tạo dữ liệu demo cho Quản lý, Giảng viên và Sinh viên. Làm chức năng Quản lý cấp tài khoản và API đăng nhập bằng JWT.
-- [ ] Làm chức năng quản lý môn, lớp học phần, giảng viên phụ trách và danh sách sinh viên. Màn hình Sinh viên hiển thị lớp đang học. Màn hình Giảng viên hiển thị lớp được phân công.
-- [ ] Kiểm tra quyền ở API theo vai trò và theo từng đối tượng. Quyền Nhóm trưởng được xác định theo nhóm, cùng với tư cách tài khoản Sinh viên.
+## Chặng 3 — Đăng ký và duyệt đề tài
 
-**Đạt chặng khi** ba vai trò đăng nhập được và thấy đúng dữ liệu. Sinh viên ngoài lớp và giảng viên ngoài phạm vi phân công bị chặn khi truy cập API của lớp.
+- [ ] Tiểu luận: cấu hình hạn đăng ký, hạn nộp, giới hạn nhóm và chế độ chấm `CHUNG`/`RIENG`; cho làm cá nhân hoặc tạo nhóm, thêm sinh viên cùng lớp bằng mã, chuyển trưởng nhóm.
+- [ ] Đồ án: Quản lý gán GVHD trước; sinh viên tự nhập tên/mô tả đề tài và gửi đúng GVHD. Không làm kho đề tài gợi ý.
+- [ ] Hai luồng: giảng viên duyệt hoặc từ chối kèm lý do; cho sửa hồ sơ cũ hoặc tạo hồ sơ mới trong hạn. Xem đề tài đã đăng ký để tự kiểm tra trùng, không ép tên duy nhất.
 
-## Chặng 3 — Tiểu luận theo lớp học phần
+**Đạt khi:** hồ sơ hai luồng đi từ gửi đến duyệt/từ chối; gửi sai quyền, quá hạn đăng ký, nhóm vượt sĩ số hoặc sai GVHD bị chặn.
 
-- [ ] Giảng viên cấu hình thời gian đăng ký, giới hạn thành viên tối thiểu và tối đa, đề tài có sẵn và mốc nộp. Sinh viên chọn đề tài có sẵn hoặc tự đề xuất.
-- [ ] Hỗ trợ đăng ký cá nhân và nhóm theo cấu hình. Thành viên cùng lớp xác nhận lời mời trước khi được tính vào nhóm; chỉ nhóm trưởng hiện tại được chuyển quyền cho thành viên đã xác nhận. Mỗi sinh viên tham gia tối đa một nhóm trong lớp. Chỉ nhóm trưởng gửi hồ sơ và nộp bài thay mặt nhóm.
-- [ ] Lưu hồ sơ chờ duyệt và chuyển đến giảng viên phụ trách lớp. Hỗ trợ duyệt hoặc từ chối kèm lý do. Sau từ chối, cho sửa hồ sơ cũ và gửi lại hoặc tạo hồ sơ mới trong hạn đăng ký. Khi được duyệt, hồ sơ có thể nộp file theo từng mốc.
-- [ ] Cho thay file đã nộp và đánh dấu trễ nếu lần nộp mới nhất quá hạn. Giảng viên xem file, ghi nhận xét, nhập điểm cuối; Quản lý duyệt công bố trước khi sinh viên xem điểm. Xem thống kê đạt, không đạt, chưa chấm theo số sinh viên. Kết nối màn hình React với API.
+## Chặng 4 — Nộp, chấm và công bố
 
-**Đạt chặng khi** sinh viên làm cá nhân và nhóm hợp lệ đều đi được từ đăng ký đến kết quả trên React. Nhóm thiếu người, hồ sơ chưa duyệt và giảng viên ngoài lớp bị chặn ở thao tác tương ứng.
+- [ ] Tiểu luận có một hạn nộp; Đồ án có mốc trung gian và mốc cuối. Cho nộp/thay file, nhận cả nộp trễ và đánh dấu `nop_tre`.
+- [ ] Giảng viên nhận xét. Tiểu luận chấm chung hoặc chấm riêng theo cấu hình lớp; lưu một dòng điểm cho mỗi sinh viên. GVHD nhập điểm Đồ án ở mốc cuối.
+- [ ] Quản lý công bố khi hồ sơ đủ điểm; sinh viên chỉ xem điểm của mình đã công bố. Tính thống kê đạt/không đạt/chưa chấm theo sinh viên, ngưỡng mặc định 4,0; GV lớp chỉnh ngưỡng lớp, GVHD chỉnh ngưỡng hồ sơ Đồ án trước công bố.
 
-## Chặng 4 — Đồ án tốt nghiệp cá nhân
+**Đạt khi:** hai luồng chạy qua giao diện từ đăng ký đến kết quả; điểm chưa công bố không lộ ra API sinh viên.
 
-- [ ] Quản lý tạo đợt đồ án và kế hoạch nộp. Sinh viên chọn đợt, giảng viên hướng dẫn và đề tài có sẵn hoặc tự đề xuất. Mỗi hồ sơ đứng tên một sinh viên.
-- [ ] Chuyển hồ sơ đến giảng viên được chọn. Khi duyệt, ghi nhận người hướng dẫn. Sau từ chối, cho sửa hồ sơ cũ và gửi lại hoặc tạo hồ sơ mới trong hạn đăng ký. Dùng lại phần xử lý file và mốc nộp, đồng thời kiểm tra quyền riêng của luồng Đồ án.
-- [ ] Sinh viên nộp báo cáo theo mốc và báo cáo cuối. Giảng viên hướng dẫn nhận xét tiến độ. Quản lý ghi lịch, hội đồng và phân công người nhập điểm bảo vệ.
-- [ ] Người được phân công nhập điểm tổng hợp của hội đồng; Quản lý xác nhận vắng bảo vệ khi cần và duyệt công bố điểm. Chưa nhập điểm hoặc chưa xác nhận vắng là chưa chấm; sinh viên chỉ xem kết quả đã công bố. Quản lý xem thống kê theo đợt. Kết nối các màn hình React với API.
+## Chặng 5 — Kiểm tra và nộp bài
 
-**Đạt chặng khi** một sinh viên đi được từ chọn giảng viên hướng dẫn đến xem điểm bảo vệ. API từ chối xét duyệt bởi giảng viên khác và từ chối nhập điểm khi người dùng chưa được phân công.
+- [ ] Kiểm tra cá nhân/nhóm, thêm thành viên sai lớp, chuyển trưởng nhóm sai quyền, sửa/tạo mới sau từ chối, nộp trễ, thay file và quyền xem điểm.
+- [ ] Kiểm tra cả `CHUNG` và `RIENG`: nhóm bốn người có bốn dòng điểm; thống kê đếm bốn sinh viên. Kiểm tra điểm dưới/trên ngưỡng và trường hợp chưa chấm.
+- [ ] Đối chiếu bốn loại UML với code đã viết. Viết lệnh chạy BE, FE, migration và dữ liệu demo trong README.
 
-## Chặng 5 — Kiểm thử và chuẩn bị nộp
+**Đạt khi:** người khác làm theo README chạy được và demo cả hai luồng.
 
-- [ ] Chạy lại hai luồng qua giao diện với dữ liệu demo mới. Kiểm tra sửa hồ sơ bị từ chối, tạo hồ sơ mới, lời mời nhóm, chuyển trưởng nhóm, vượt sĩ số, sai người duyệt, thay file, nộp trễ, nộp sai mốc, nhập điểm sai quyền và công bố điểm. Kiểm tra điểm sát ngưỡng theo quy định đã chốt.
-- [ ] Đối chiếu thống kê với danh sách sinh viên. Nếu áp dụng điểm chung, nhóm 4 người đạt được tính là 4 sinh viên đạt.
-- [ ] Cập nhật README với các bước chuẩn bị PostgreSQL local, cấu hình môi trường, chạy migration, tạo dữ liệu demo và khởi động backend, frontend.
-- [ ] Đối chiếu bốn loại sơ đồ bắt buộc với nghiệp vụ đã triển khai. Chuẩn bị một kịch bản demo Tiểu luận theo nhóm và một kịch bản demo Đồ án cá nhân.
+## Chưa làm trong bản đầu
 
-**Đạt chặng khi** người khác có thể làm theo README để chạy hệ thống, đăng nhập và demo cả hai luồng với dữ liệu mẫu.
-
-## Quyết định cần xác nhận
-
-| Quyết định | Mốc cần xác nhận |
-| --- | --- |
-| Ngưỡng đạt và thang điểm của từng luồng | Trước khi triển khai thống kê; bài nộp trễ vẫn được nhận và đánh dấu trễ. |
-| Tiểu luận nhóm dùng điểm chung hay có điểm riêng từng thành viên | Trước khi chốt cách lưu kết quả trong ERD. Phương án hiện tại là điểm chung. |
-| Ai được phân công nhập điểm bảo vệ | Trước khi triển khai phần bảo vệ. Phương án hiện tại là Quản lý chỉ định giảng viên nhập điểm tổng hợp của hội đồng. |
-| Có thêm nhánh giảng viên yêu cầu chỉnh sửa trước khi quyết định hay không | Sau khi hai lựa chọn sửa hồ sơ bị từ chối hoặc tạo hồ sơ mới đã chạy ổn định. |
+Kho đề tài gợi ý của giảng viên, quy trình mời/xác nhận nhóm, hội đồng và lịch bảo vệ trong hệ thống. Các thầy có thể thống nhất điểm Đồ án bên ngoài; GVHD được gán là người nhập điểm. Nếu giảng viên môn học xác nhận hội đồng/lịch là bắt buộc, phải bổ sung trước khi nộp.

@@ -5,9 +5,11 @@ Dự án dùng ReactJS (`FE`), FastAPI async theo OOP (`BE`) và PostgreSQL (`DB
 ## Tài liệu
 
 - [Phân tích nghiệp vụ](01-phan-tich-nghiep-vu.md): vai trò và hai quy trình.
-- [Sơ đồ UML](02-so-do-uml(1).md): Use Case, Lớp, Tuần tự và Hoạt động.
+- [Sơ đồ UML](02-so-do-uml.md): Use Case, Lớp, Tuần tự và Hoạt động.
 - [Kế hoạch triển khai](03-ke-hoach-trien-khai.md): thứ tự thực hiện và tiêu chí hoàn thành từng chặng.
-- [Thiết kế cơ sở dữ liệu](04-thiet-ke-co-so-du-lieu.md): 17 bảng và ràng buộc PostgreSQL dự kiến.
+- [Thiết kế cơ sở dữ liệu](04-thiet-ke-co-so-du-lieu.md): 14 bảng và ràng buộc PostgreSQL dự kiến.
+
+Phạm vi bản đầu: sinh viên tự đề xuất đề tài; Quản lý gán GVHD Đồ án trước; GVHD nhập điểm Đồ án; Tiểu luận chấm chung hoặc riêng từng sinh viên. Nộp trễ được đánh dấu, điểm cần Quản lý duyệt công bố. Hội đồng/lịch bảo vệ và kho đề tài gợi ý để sau.
 
 ## Cấu trúc
 

@@ -1,6 +1,6 @@
 # Cơ sở dữ liệu (DB)
 
-Thư mục này dành cho migration PostgreSQL và dữ liệu demo. Thiết kế 17 bảng và ràng buộc nằm trong [file 04](../04-thiet-ke-co-so-du-lieu.md). Hiện đây là **bộ khung**, chưa có migration hay dữ liệu mẫu chạy được.
+Thư mục này dành cho migration PostgreSQL và dữ liệu demo. Thiết kế 14 bảng và ràng buộc nằm trong [file 04](../04-thiet-ke-co-so-du-lieu.md). Hiện đây là **bộ khung**, chưa có migration hay dữ liệu mẫu chạy được.
 
 ## Quan hệ với BE
 
@@ -19,6 +19,6 @@ Tham khảo [Alembic async cookbook](https://alembic.sqlalchemy.org/en/latest/co
 ## Thứ tự làm khi triển khai
 
 1. Tạo database PostgreSQL `httt07` trên máy phát triển.
-2. Hoàn thiện model BE, `alembic.ini` và `migrations/env.py`; tạo migration đầu tiên cho 17 bảng.
+2. Hoàn thiện model BE, `alembic.ini` và `migrations/env.py`; tạo migration đầu tiên cho 14 bảng.
 3. Chạy migration trên database trống, kiểm tra khóa ngoại, chỉ mục duy nhất có điều kiện và các ràng buộc trong file 04.
 4. Thêm dữ liệu mẫu rồi kiểm tra hai luồng qua API và FE. Ghi lệnh chạy migration và nạp dữ liệu tại đây sau khi các file đó hoàn chỉnh.
