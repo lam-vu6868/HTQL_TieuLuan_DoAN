@@ -1,6 +1,7 @@
 -- Dữ liệu demo cho hai luồng nghiệp vụ.
 -- 1. Chỉ chạy sau migration; tạo tài khoản Quản lý, Giảng viên, Sinh viên với mật khẩu băm.
 -- 2. Thêm môn/lớp, giảng viên phụ trách, sinh viên trong lớp và nhóm Tiểu luận.
--- 3. Thêm đợt Đồ án, đề tài và các mốc nộp để FE có dữ liệu demo.
--- 4. Dùng dữ liệu giả, mã định danh không trùng; ghi thứ tự INSERT theo khóa ngoại.
+-- 3. Thêm đợt Đồ án, phân công GVHD theo sinh viên và các mốc nộp.
+-- 4. Tạo hồ sơ tự đề xuất, bài nộp và điểm CHUNG/RIENG để thử hai luồng.
+-- 5. Dùng dữ liệu giả, mã định danh không trùng; ghi thứ tự INSERT theo khóa ngoại.
 -- Hiện chưa có câu INSERT vì schema thực tế chưa được tạo.

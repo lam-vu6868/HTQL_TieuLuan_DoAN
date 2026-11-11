@@ -1,7 +1,7 @@
-"""Bài nộp, bảo vệ và kết quả.
+"""Mốc nộp Đồ án, bài nộp và điểm từng sinh viên.
 
-1. Tạo MocNop và BaiNop; một bài hiện hành cho mỗi hồ sơ/mốc, có nop_tre.
-2. Tạo HoiDong, ThanhVienHoiDong và BuoiBaoVe cho đợt Đồ án.
-3. Tạo KetQua với điểm hoặc xác nhận vắng, người nhập và trạng thái công bố.
-4. Ràng buộc chưa có điểm/chưa xác nhận vắng là chưa chấm theo file 04.
+1. Tạo MocNop chỉ cho Đồ án; Tiểu luận dùng han_nop của lớp.
+2. Tạo BaiNop; một bài hiện hành cho mỗi hồ sơ/mốc, có nop_tre và nhận xét.
+3. Tạo KetQua với PK (ho_so_id, sinh_vien_id), điểm, người nhập và trạng thái công bố.
+4. Chưa có điểm là chưa chấm; điểm CHUNG ghi cùng giá trị vào từng sinh viên, RIENG ghi từng giá trị.
 """

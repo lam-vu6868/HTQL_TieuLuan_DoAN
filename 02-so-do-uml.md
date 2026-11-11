@@ -1,268 +1,143 @@
-# HTTT07 — Sơ đồ UML
+# HTTT07 — Sơ đồ UML cho phạm vi bản đầu
 
-Tám sơ đồ PlantUML mô tả hai quy trình và các hoạt động của Quản lý trong HTTT07. Để xem một sơ đồ, sao chép cả khối từ dòng @startuml đến dòng @enduml vào trình xem PlantUML.
-
-| Mục | Sơ đồ | Cách đọc |
-| --- | --- | --- |
-| 1 | Use Case | Nhìn theo vai trò và nhóm chức năng. |
-| 2 | Lớp | Bắt đầu từ Hồ sơ đăng ký, sau đó xem từng nhánh. |
-| 3.1–3.2 | Tuần tự | Đọc từ gửi hồ sơ đến quyết định của giảng viên. |
-| 4.1–4.2 | Hoạt động | Tiểu luận và Đồ án từ đăng ký đến kết quả. |
-| 4.3–4.4 | Hoạt động của Quản lý | Cấp tài khoản, thiết lập lớp, quản lý đợt và lịch bảo vệ. |
+Sáu sơ đồ PlantUML gồm Use Case, Lớp, hai sơ đồ Tuần tự duyệt đề tài và hai sơ đồ Hoạt động. Sao chép từng khối `@startuml` đến `@enduml` vào PlantUML để xem hình. Sơ đồ mô tả **nghiệp vụ bản đầu** trong [file 01](01-phan-tich-nghiep-vu.md); tên bảng và ràng buộc ở [file 04](04-thiet-ke-co-so-du-lieu.md).
 
 ## 1. Use Case tổng thể
 
 ```plantuml
 @startuml
-title HTTT07 • Use Case tổng thể
 left to right direction
-!pragma layout smetana
-skinparam shadowing false
-skinparam DefaultFontName SansSerif
-skinparam defaultFontColor #172B4D
-skinparam ArrowColor #718198
-skinparam ActorBorderColor #344C69
-skinparam UsecaseBorderColor #587499
-skinparam UsecaseBackgroundColor #FFFFFF
-skinparam PackageBorderColor #CCD6E2
-skinparam RectangleBorderColor #B4C4D5
-skinparam packageStyle rectangle
-
 actor "Sinh viên" as SV
 actor "Nhóm trưởng" as NT
 actor "Giảng viên" as GV
 actor "Quản lý" as QL
-
-rectangle "HỆ THỐNG HTTT07" {
-  package "01  Truy cập" as AUTH #F3F5F8 {
-    usecase "Đăng nhập" as LOGIN
-    usecase "Tra cứu nhận xét\nvà kết quả" as RESULT
-  }
-  package "02  Tiểu luận" as ESSAY #EAF3FF {
-    usecase "Lập nhóm" as TEAM
-    usecase "Xác nhận lời mời nhóm" as ACCEPT
-    usecase "Quản lý thành viên" as MEMBER
-    usecase "Đăng ký đề tài\nvà nộp báo cáo" as TL
-    usecase "Thiết lập kế hoạch\nvà giới hạn nhóm" as PLAN
-    usecase "Xét duyệt đề tài" as TL_REVIEW
-    usecase "Nhận xét, chấm điểm\nvà xem thống kê" as TL_MARK
-  }
-  package "03  Đồ án tốt nghiệp" as THESIS #E9F7F2 {
-    usecase "Chọn người hướng dẫn,\nđăng ký và nộp báo cáo" as DA
-    usecase "Xem lịch bảo vệ" as SCHED
-    usecase "Xét duyệt đề tài\nvà nhận xét tiến độ" as DA_REVIEW
-    usecase "Nhập điểm bảo vệ" as DEF_MARK
-  }
-  package "04  Quản trị" as ADMIN #FFF5E8 {
-    usecase "Cấp tài khoản" as ACCOUNT
-    usecase "Quản lý môn, lớp\nvà phân công giảng dạy" as CLASS
-    usecase "Quản lý đợt, lịch bảo vệ\nvà phân công nhập điểm" as TERM
-    usecase "Xem thống kê Đồ án" as STATS
-    usecase "Xác nhận vắng bảo vệ\nvà duyệt công bố điểm" as PUBLISH
-  }
-}
-
 NT --|> SV
-SV -- LOGIN
-SV -- RESULT
-SV -- TEAM
-SV -- ACCEPT
-SV -- TL
-NT -- MEMBER
-NT -- TL
-SV -- DA
-SV -- SCHED
-
-LOGIN -- GV
-PLAN -- GV
-TL_REVIEW -- GV
-TL_MARK -- GV
-DA_REVIEW -- GV
-DEF_MARK -- GV
-
-LOGIN -- QL
-ACCOUNT -- QL
-CLASS -- QL
-TERM -- QL
-STATS -- QL
-PUBLISH -- QL
+rectangle HTTT07 {
+  usecase "Đăng nhập / đặt lại mật khẩu" as Login
+  usecase "Tạo nhóm, thêm thành viên\nvà chuyển trưởng nhóm" as Group
+  usecase "Đề xuất, sửa, gửi lại đề tài" as Register
+  usecase "Duyệt hoặc từ chối\nkèm nhận xét" as Review
+  usecase "Nộp hoặc thay file báo cáo" as Submit
+  usecase "Nhận xét và nhập điểm" as Grade
+  usecase "Xem điểm đã công bố" as View
+  usecase "Tạo lớp, đợt, gán GVHD\nvà đặt hạn nộp" as Setup
+  usecase "Duyệt công bố điểm" as Publish
+  usecase "Xem thống kê sinh viên đạt" as Stats
+}
+SV -- Login
+SV -- Register
+SV -- Submit
+SV -- View
+NT -- Group
+GV -- Login
+GV -- Review
+GV -- Grade
+GV -- Stats
+QL -- Login
+QL -- Setup
+QL -- Publish
+QL -- Stats
 @enduml
 ```
 
-- **Tiểu luận:** Sinh viên xem lớp mình đang học và tự đăng ký, nộp bài nếu làm cá nhân. Người được mời xác nhận vào nhóm; chỉ nhóm trưởng hiện tại chuyển quyền trưởng nhóm, gửi hồ sơ và nộp bài thay nhóm.
-- **Đồ án:** Sinh viên xem đợt đang mở, chọn giảng viên hướng dẫn và đăng ký cá nhân. Giảng viên được phân công nhập điểm sau khi hội đồng chấm; Quản lý duyệt công bố.
-- Ở cả hai luồng, người đăng ký có thể chọn đề tài có sẵn hoặc tự đề xuất, sửa hồ sơ bị từ chối rồi gửi lại hoặc tạo hồ sơ mới trong hạn, và thay file đã nộp. Bài nộp sau hạn được đánh dấu trễ.
+Sinh viên tự đề xuất đề tài; không có chức năng chọn đề tài do giảng viên cung cấp trong bản đầu. Quản lý gán GVHD trước cho sinh viên Đồ án. Trưởng nhóm Tiểu luận thêm sinh viên cùng lớp bằng mã; chỉ trưởng nhóm gửi hồ sơ và nộp bài thay nhóm.
 
-## 2. Sơ đồ Lớp theo hướng đối tượng
-
-Đọc từ lớp trung tâm **Hồ sơ đăng ký**. Tiểu luận và Đồ án cùng kế thừa thao tác gửi, duyệt và từ chối. Phần khác nhau nằm ở **cách tìm người duyệt** và **người thực hiện hồ sơ**.
+## 2. Sơ đồ Lớp nghiệp vụ
 
 ```plantuml
 @startuml
-title HTTT07 • Sơ đồ Lớp nghiệp vụ
-top to bottom direction
-skinparam shadowing false
-skinparam DefaultFontName SansSerif
-skinparam defaultFontColor #172B4D
-skinparam ArrowColor #718198
-skinparam ClassBorderColor #587499
-skinparam ClassBackgroundColor #FFFFFF
-skinparam ClassAttributeIconSize 0
-skinparam classFontStyle bold
-skinparam nodesep 27
-skinparam ranksep 39
-skinparam linetype polyline
-hide circle
 hide empty members
-
-class DichVuDuyetDeTai as "Dịch vụ duyệt đề tài" <<dịch vụ>> #F0F2FA {
-  +xetDuyet(hoSo, giangVien, quyetDinh)
+class LopHocPhan {
+  +hanNop: datetime
+  +cheDoCham: CHUNG | RIENG
+  +kiemTraSiSo(nhom): bool
 }
-
-abstract class HoSoDangKy as "Hồ sơ đăng ký" #FFF4DC {
-  -trangThai: TrangThaiHoSo
+class DotDoAn {
+  +dangMo(): bool
+}
+class PhanCongHuongDan {
+  +sinhVienId: int
+  +giangVienId: int
+}
+class NhomTieuLuan {
+  +themThanhVien(maSV)
+  +chuyenTruongNhom(sinhVien)
+  +duDieuKienGui(): bool
+}
+class HoSoDangKy {
+  +tenDeTai: str
+  +trangThai: str
   +gui()
   +duyet()
   +tuChoi(lyDo)
   +suaSauTuChoi()
 }
-class DeTai as "Đề tài" {
-  -ten: str
+class MocNop {
+  +hanNop: datetime
+  +laMocCuoi: bool
 }
-class HoSoTieuLuan as "Hồ sơ Tiểu luận" #EAF3FF {
-  +nguoiDuyet(): GiangVien
+class BaiNop {
+  +nopLuc: datetime
+  +nopTre: bool
+  +thayFile()
+  +ghiNhanXet()
 }
-class HoSoDoAn as "Hồ sơ Đồ án" #E9F7F2 {
-  -nguoiThucHien: SinhVien
-  -giangVienDuocChon: GiangVien
-  +nguoiDuyet(): GiangVien
-}
-
-class LopHocPhan as "Lớp học phần" #EAF3FF {
-  -maLop: str
-  -soThanhVienToiThieu: int
-  -soThanhVienToiDa: int
-  +kiemTraSoThanhVien(soNguoi): bool
-}
-class NhomTieuLuan as "Nhóm Tiểu luận" #EAF3FF {
-  -truongNhom: SinhVien
-  +moiThanhVien(sv)
-  +xacNhanLoiMoi(sv)
-  +chuyenTruongNhom(sv)
-  +duDieuKienGui(): bool
-}
-class DotDoAn as "Đợt Đồ án" #E9F7F2 {
-  -maDot: str
-  +dangMo(): bool
-}
-class BuoiBaoVe as "Buổi bảo vệ" #E9F7F2 {
-  -thoiGian: datetime
-  -hoiDong: HoiDong
-  +duocNhapDiem(gv): bool
-}
-
-class MocNop as "Mốc nộp" {
-  -hanNop: datetime
-}
-class BaiNop as "Bài nộp" {
-  -tepBaoCao: str
-  -thoiDiemNop: datetime
-  -nopTre: bool
-  +thayFile(tep)
-  +ghiNhanXet(noiDung)
-}
-class KetQua as "Kết quả" {
-  -diemCuoi: decimal?
-  -vangBaoVe: bool
-  -trangThaiCongBo: TrangThaiCongBo
+class KetQua {
+  +sinhVienId: int
+  +diem: decimal
   +congBo()
   +dat(nguong): bool
 }
-
-DichVuDuyetDeTai .down.> HoSoDangKy : xét duyệt
-DeTai "1" -right- "0..*" HoSoDangKy
-HoSoDangKy <|-- HoSoTieuLuan
-HoSoDangKy <|-- HoSoDoAn
-HoSoTieuLuan "0..*" -down- "1" LopHocPhan
-HoSoTieuLuan "0..*" -down- "0..1" NhomTieuLuan
-HoSoDoAn "0..*" -down- "1" DotDoAn
-HoSoDoAn "0..*" -down- "0..1" BuoiBaoVe
-HoSoDangKy "1" -right- "0..*" BaiNop
-BaiNop "0..*" -down- "1" MocNop
-HoSoDangKy "1" -down- "0..1" KetQua
-LopHocPhan -[hidden]right- NhomTieuLuan
-NhomTieuLuan -[hidden]right- DotDoAn
-DotDoAn -[hidden]right- BuoiBaoVe
+class DichVuDuyetDeTai {
+  +xetDuyet(hoSo, giangVien, quyetDinh)
+}
+LopHocPhan "1" -- "0..*" NhomTieuLuan
+NhomTieuLuan "0..1" -- "0..*" HoSoDangKy
+LopHocPhan "0..1" -- "0..*" HoSoDangKy
+DotDoAn "0..1" -- "0..*" HoSoDangKy
+DotDoAn "1" -- "0..*" PhanCongHuongDan
+PhanCongHuongDan "0..1" -- "0..*" HoSoDangKy
+DotDoAn "1" -- "0..*" MocNop
+HoSoDangKy "1" -- "0..*" BaiNop
+BaiNop "0..*" -- "0..1" MocNop
+HoSoDangKy "1" -- "0..*" KetQua
+DichVuDuyetDeTai ..> HoSoDangKy
 @enduml
 ```
 
-| Nhìn vào | Cách hiểu |
-| --- | --- |
-| Dòng có dấu trừ | Thuộc tính nội bộ. Ví dụ, lớp học phần giữ giới hạn số thành viên. |
-| Dòng có dấu cộng | Phương thức có thể gọi từ bên ngoài. Ví dụ, hàm kiểm tra sĩ số trả về đúng hoặc sai. |
-| Mũi tên tam giác rỗng | Kế thừa. Hai loại hồ sơ dùng chung các thao tác của Hồ sơ đăng ký. |
-| Số ở đầu đường nối | Số lượng. Ví dụ, một hồ sơ có từ 0 đến nhiều bài nộp và từ 0 đến 1 kết quả. |
-
-Hồ sơ Tiểu luận lấy người duyệt từ giảng viên phụ trách lớp. Hồ sơ có một người làm cá nhân hoặc một nhóm. Hồ sơ Đồ án lấy người duyệt từ giảng viên được sinh viên chọn. Mỗi mốc nộp thuộc một lớp học phần hoặc một đợt đồ án. Quản lý là người duy nhất được công bố kết quả hoặc xác nhận vắng bảo vệ.
-
-Bản tổng quan tập trung vào các lớp trực tiếp xử lý hai quy trình. Tài khoản, Sinh viên, Giảng viên, Môn học, Hội đồng và Dịch vụ đăng ký là các lớp hỗ trợ trong thiết kế chi tiết. Số bảng và các khóa PostgreSQL được xác định trong ERD.
+Hồ sơ Tiểu luận gắn lớp, có thể gắn nhóm; hồ sơ Đồ án gắn đợt và phân công GVHD. Tiểu luận lấy hạn từ lớp, Đồ án lấy hạn từ mốc. `KetQua` ứng với **một sinh viên trong một hồ sơ**; điểm chung ghi cùng giá trị cho các thành viên, điểm riêng ghi từng giá trị. Quản lý chỉ công bố khi hồ sơ đã đủ điểm.
 
 ## 3. Sơ đồ Tuần tự duyệt đề tài
-
-Người gửi và người duyệt đã đăng nhập. FastAPI xác thực JWT và kiểm tra quyền theo phạm vi của hồ sơ. Thao tác gửi và thao tác xét duyệt có thể diễn ra ở hai thời điểm khác nhau.
 
 ### 3.1. Tiểu luận
 
 ```plantuml
 @startuml
-title HTTT07 • Tuần tự duyệt Tiểu luận
-hide footbox
-skinparam shadowing false
-skinparam DefaultFontName SansSerif
-skinparam defaultFontColor #172B4D
-skinparam ArrowColor #526C91
-skinparam ParticipantBackgroundColor #EAF3FF
-skinparam ParticipantBorderColor #6586AB
-skinparam SequenceDividerBackgroundColor #EAF3FF
-skinparam SequenceGroupBorderColor #B7C9DD
-
-actor "Sinh viên hoặc\nNhóm trưởng" as SV
-participant "ReactJS" as UI
+actor "Sinh viên/Trưởng nhóm" as SV
+participant "React" as FE
 participant "FastAPI" as API
 database "PostgreSQL" as DB
-actor "Giảng viên\nphụ trách lớp" as GV
-
-== 01  Gửi đăng ký ==
-SV -> UI: Chọn lớp, chọn hoặc đề xuất đề tài rồi gửi
-UI -> API: Gửi đăng ký Tiểu luận
-API -> DB: Đọc lớp, thành viên và đề tài nếu có
-DB --> API: Trả dữ liệu kiểm tra
-API -> API: Kiểm tra thời hạn, người gửi,\nsĩ số và phạm vi đề tài
-break Hồ sơ chưa hợp lệ
-  API --> UI: Báo lý do để điều chỉnh
+actor "Giảng viên lớp" as GV
+SV -> FE: Nhập tên, mô tả đề tài
+FE -> API: Gửi hồ sơ Tiểu luận
+API -> DB: Kiểm tra lớp, hạn, người gửi, nhóm
+DB --> API: Dữ liệu kiểm tra
+alt Hợp lệ
+  API -> DB: Lưu CHO_DUYET
+  API --> FE: Mã hồ sơ
+else Không hợp lệ
+  API --> FE: Lý do từ chối thao tác
 end
-API -> DB: Lưu hồ sơ CHỜ DUYỆT theo lớp
-API --> UI: Trả mã hồ sơ và trạng thái
-
-== 02  Giảng viên xét duyệt ==
-GV -> UI: Mở hồ sơ chờ duyệt của lớp
-UI -> API: Yêu cầu chi tiết hồ sơ
-API -> DB: Đọc hồ sơ theo lớp được phân công
-API --> UI: Trả chi tiết hồ sơ
-GV -> UI: Chọn duyệt hoặc từ chối
-UI -> API: Gửi quyết định xét duyệt
-API -> DB: Đọc hồ sơ và phân công lớp
-DB --> API: Trả hồ sơ và giảng viên phụ trách
-break Sai người duyệt hoặc hồ sơ đã được xử lý
-  API --> UI: Báo lý do từ chối thao tác
-end
-alt Đồng ý
-  API -> DB: Ghi ĐÃ DUYỆT
+GV -> FE: Mở hồ sơ chờ của lớp
+FE -> API: Gửi quyết định và nhận xét
+API -> DB: Kiểm tra GV phụ trách, trạng thái hồ sơ
+alt Duyệt
+  API -> DB: Ghi DA_DUYET
 else Từ chối
-  API -> DB: Ghi TỪ CHỐI và lý do
+  API -> DB: Ghi TU_CHOI và lý do
 end
-API --> UI: Trả kết quả xét duyệt
-note over SV,UI: Nếu bị từ chối, trong hạn đăng ký người gửi\nchọn sửa hồ sơ cũ rồi gửi lại hoặc tạo hồ sơ mới.
+API --> FE: Trạng thái mới
+note over SV,FE: Nếu bị từ chối: trong hạn, sửa hồ sơ cũ\nhoặc tạo hồ sơ mới rồi gửi lại.
 @enduml
 ```
 
@@ -270,288 +145,93 @@ note over SV,UI: Nếu bị từ chối, trong hạn đăng ký người gửi\n
 
 ```plantuml
 @startuml
-title HTTT07 • Tuần tự duyệt Đồ án tốt nghiệp
-hide footbox
-skinparam shadowing false
-skinparam DefaultFontName SansSerif
-skinparam defaultFontColor #172B4D
-skinparam ArrowColor #477C70
-skinparam ParticipantBackgroundColor #E9F7F2
-skinparam ParticipantBorderColor #6B9A8C
-skinparam SequenceDividerBackgroundColor #E9F7F2
-skinparam SequenceGroupBorderColor #AECFC4
-
 actor "Sinh viên" as SV
-participant "ReactJS" as UI
+participant "React" as FE
 participant "FastAPI" as API
 database "PostgreSQL" as DB
-actor "Giảng viên\nđược chọn" as GV
-
-== 01  Gửi đăng ký cá nhân ==
-SV -> UI: Chọn đợt, giảng viên và đề tài
-UI -> API: Gửi đăng ký Đồ án
-API -> DB: Đọc đợt, giảng viên và đề tài nếu có
-DB --> API: Trả dữ liệu kiểm tra
-API -> API: Kiểm tra đợt đang mở và phạm vi đề tài
-break Hồ sơ chưa hợp lệ
-  API --> UI: Báo lý do để điều chỉnh
+actor "GVHD được gán" as GV
+SV -> FE: Chọn đợt, nhập tên và mô tả đề tài
+FE -> API: Gửi hồ sơ Đồ án
+API -> DB: Đọc đợt và phân công GVHD của SV
+DB --> API: Phân công, hạn đăng ký
+alt Đúng phân công và còn hạn
+  API -> DB: Lưu CHO_DUYET gắn phân công
+  API --> FE: Mã hồ sơ
+else Không hợp lệ
+  API --> FE: Lý do từ chối thao tác
 end
-API -> DB: Lưu hồ sơ CHỜ DUYỆT với giảng viên được chọn
-API --> UI: Trả mã hồ sơ và trạng thái
-
-== 02  Giảng viên xét duyệt ==
-GV -> UI: Mở hồ sơ gửi đến mình
-UI -> API: Yêu cầu chi tiết hồ sơ
-API -> DB: Đọc hồ sơ theo giảng viên được chọn
-API --> UI: Trả chi tiết hồ sơ
-GV -> UI: Chọn nhận hướng dẫn hoặc từ chối
-UI -> API: Gửi quyết định xét duyệt
-API -> DB: Đọc hồ sơ và người được chọn hướng dẫn
-DB --> API: Trả hồ sơ và thông tin người duyệt
-break Sai người duyệt hoặc hồ sơ đã được xử lý
-  API --> UI: Báo lý do từ chối thao tác
-end
-alt Nhận hướng dẫn
-  API -> DB: Ghi ĐÃ DUYỆT và xác nhận người hướng dẫn
+GV -> FE: Mở hồ sơ được phân công
+FE -> API: Gửi quyết định và nhận xét
+API -> DB: Kiểm tra GVHD, trạng thái hồ sơ
+alt Duyệt
+  API -> DB: Ghi DA_DUYET
 else Từ chối
-  API -> DB: Ghi TỪ CHỐI và lý do
+  API -> DB: Ghi TU_CHOI và lý do
 end
-API --> UI: Trả kết quả xét duyệt
-note over SV,UI: Nếu bị từ chối, trong hạn đăng ký sinh viên\nchọn sửa hồ sơ cũ rồi gửi lại hoặc tạo hồ sơ mới.
+API --> FE: Trạng thái mới
+note over SV,FE: Nếu bị từ chối: trong hạn, sửa hồ sơ cũ\nhoặc tạo hồ sơ mới rồi gửi lại.
 @enduml
 ```
 
 ## 4. Sơ đồ Hoạt động
 
-### 4.1. Tiểu luận theo lớp học phần
+### 4.1. Tiểu luận
 
 ```plantuml
 @startuml
-title HTTT07 • Hoạt động Tiểu luận
-skinparam shadowing false
-skinparam DefaultFontName SansSerif
-skinparam defaultFontColor #172B4D
-skinparam ArrowColor #587499
-skinparam ActivityBorderColor #6586AB
-skinparam ActivityBackgroundColor #FFFFFF
-skinparam ActivityDiamondBackgroundColor #FFF4DC
-skinparam ActivityDiamondBorderColor #A48347
-skinparam PartitionBorderColor #C8D8EB
-
 start
-partition #EAF3FF "01  Chuẩn bị và đăng ký" {
-  :Giảng viên đặt hạn và giới hạn nhóm;
-  :Sinh viên chọn lớp mình đang học;
-  if (Làm nhóm?) then (Có)
-    :Nhóm trưởng mời thành viên cùng lớp;
-    :Thành viên xác nhận lời mời;
-    :Nhóm trưởng hiện tại có thể chuyển quyền;
-  else (Cá nhân)
-    :Sinh viên chuẩn bị hồ sơ cá nhân;
-  endif
-  :Chọn đề tài có sẵn hoặc tự đề xuất rồi gửi;
-  if (Hồ sơ hợp lệ?) then (Có)
-    :Hệ thống ghi chờ duyệt theo lớp;
-  else (Không)
-    :Hiển thị lý do để điều chỉnh và gửi lại;
-    stop
-  endif
-}
-
-partition #F3F5F8 "02  Xét duyệt" {
-  :Giảng viên phụ trách lớp xem hồ sơ;
-  if (Duyệt đề tài?) then (Duyệt)
-    :Hệ thống ghi đã duyệt;
-  else (Từ chối)
-    :Hệ thống ghi từ chối và lý do;
-    :Hiện hai lựa chọn sửa hồ sơ cũ hoặc tạo hồ sơ mới trong hạn;
-    stop
-  endif
-}
-
-partition #E9F7F2 "03  Nộp bài và kết quả" {
-  :Sinh viên hoặc nhóm trưởng nộp báo cáo theo mốc;
-  :Có thể thay file; hệ thống ghi lần nộp mới nhất và trạng thái trễ;
-  :Giảng viên nhận xét và nhập điểm cuối;
-  :Quản lý duyệt công bố điểm;
-  :Sinh viên xem điểm đã công bố;
-  :Hệ thống thống kê theo số sinh viên trong lớp;
-}
+:Quản lý tạo lớp và xếp sinh viên;
+:Giảng viên đặt hạn, giới hạn nhóm và chế độ chấm;
+:Sinh viên làm cá nhân hoặc trưởng nhóm thêm thành viên cùng lớp;
+:Sinh viên/Trưởng nhóm tự đề xuất đề tài và gửi;
+if (Giảng viên duyệt?) then (Có)
+  :Hồ sơ DA_DUYET;
+else (Không)
+  :Ghi lý do TU_CHOI;
+  :Trong hạn, sửa hồ sơ cũ hoặc tạo mới;
+  stop
+endif
+:Nộp hoặc thay file, đánh dấu trễ nếu quá hạn;
+:Giảng viên nhận xét và nhập điểm chung hoặc riêng;
+if (Đủ điểm cho mọi thành viên?) then (Có)
+  :Quản lý duyệt công bố;
+  :Mỗi sinh viên xem điểm của mình;
+else (Chưa)
+  :Giữ chưa chấm/chưa công bố;
+endif
+:Thống kê đạt theo từng sinh viên;
 stop
 @enduml
 ```
 
-### 4.2. Đồ án tốt nghiệp cá nhân
+### 4.2. Đồ án tốt nghiệp
 
 ```plantuml
 @startuml
-title HTTT07 • Hoạt động Đồ án tốt nghiệp
-skinparam shadowing false
-skinparam DefaultFontName SansSerif
-skinparam defaultFontColor #172B4D
-skinparam ArrowColor #587499
-skinparam ActivityBorderColor #6586AB
-skinparam ActivityBackgroundColor #FFFFFF
-skinparam ActivityDiamondBackgroundColor #FFF4DC
-skinparam ActivityDiamondBorderColor #A48347
-skinparam PartitionBorderColor #C8D8EB
-
 start
-partition #EAF3FF "01  Đăng ký cá nhân" {
-  :Sinh viên chọn đợt và giảng viên hướng dẫn;
-  :Chọn đề tài có sẵn hoặc tự đề xuất rồi gửi;
-  if (Hồ sơ hợp lệ?) then (Có)
-    :Hệ thống ghi chờ duyệt cho giảng viên đã chọn;
-  else (Không)
-    :Hiển thị lý do để điều chỉnh và gửi lại;
-    stop
-  endif
-}
-
-partition #F3F5F8 "02  Xét duyệt và theo dõi" {
-  :Giảng viên được chọn xem hồ sơ;
-  if (Nhận hướng dẫn?) then (Đồng ý)
-    :Hệ thống ghi đã duyệt và xác nhận người hướng dẫn;
-  else (Từ chối)
-    :Hệ thống ghi từ chối và lý do;
-    :Hiện hai lựa chọn sửa hồ sơ cũ hoặc tạo hồ sơ mới trong hạn;
-    stop
-  endif
-  :Sinh viên nộp hoặc thay file theo mốc và báo cáo cuối;
-  :Hệ thống đánh dấu trễ nếu lần nộp mới nhất quá hạn;
-  :Giảng viên hướng dẫn nhận xét tiến độ;
-}
-
-partition #E9F7F2 "03  Bảo vệ và kết quả" {
-  :Quản lý ghi lịch, hội đồng và người nhập điểm;
-  if (Sinh viên vắng bảo vệ?) then (Có)
-    :Quản lý xác nhận vắng, kết quả không đạt;
-  else (Không)
-    :Sinh viên bảo vệ, hội đồng chấm điểm;
-    :Người được phân công nhập điểm tổng hợp;
-  endif
-  if (Đã có điểm hoặc xác nhận vắng?) then (Có)
-    :Quản lý duyệt công bố kết quả;
-    :Sinh viên xem kết quả đã công bố;
-  else (Chưa)
-    :Giữ trạng thái chưa chấm;
-  endif
-  :Hệ thống cập nhật thống kê theo đợt;
-}
+:Quản lý tạo đợt, gán GVHD và các mốc nộp;
+:Sinh viên tự đề xuất đề tài và gửi GVHD được gán;
+if (GVHD duyệt?) then (Có)
+  :Hồ sơ DA_DUYET;
+else (Không)
+  :Ghi lý do TU_CHOI;
+  :Trong hạn, sửa hồ sơ cũ hoặc tạo mới;
+  stop
+endif
+:Sinh viên nộp hoặc thay file theo mốc;
+:Đánh dấu trễ nếu quá hạn;
+:GVHD nhận xét mốc trung gian, nhập điểm mốc cuối;
+if (Đã có điểm?) then (Có)
+  :Quản lý duyệt công bố;
+  :Sinh viên xem điểm;
+else (Chưa)
+  :Giữ trạng thái chưa chấm;
+endif
+:Thống kê sinh viên đạt trong đợt;
 stop
 @enduml
 ```
 
-### 4.3. Quản lý cấp tài khoản và thiết lập lớp học phần
+## Phạm vi chưa triển khai
 
-Quản lý đã đăng nhập. Đây là luồng chuẩn bị dữ liệu trước khi sinh viên và giảng viên bắt đầu sử dụng các chức năng Tiểu luận. Có thể dùng lại tài khoản và môn học đã có.
-
-```plantuml
-@startuml
-title HTTT07 • Quản lý cấp tài khoản và thiết lập lớp
-skinparam shadowing false
-skinparam DefaultFontName SansSerif
-skinparam defaultFontColor #172B4D
-skinparam ArrowColor #587499
-skinparam ActivityBorderColor #6586AB
-skinparam ActivityBackgroundColor #FFFFFF
-skinparam ActivityDiamondBackgroundColor #FFF4DC
-skinparam ActivityDiamondBorderColor #A48347
-skinparam PartitionBorderColor #C8D8EB
-
-start
-partition #FFF5E8 "01  Chuẩn bị tài khoản" {
-  if (Cần cấp tài khoản mới?) then (Có)
-    :Quản lý nhập thông tin và chọn vai trò;
-    if (Thông tin và định danh hợp lệ?) then (Có)
-      :Hệ thống lưu tài khoản và hồ sơ tương ứng;
-    else (Không)
-      :Báo lỗi để Quản lý điều chỉnh;
-      stop
-    endif
-  else (Không)
-    :Dùng tài khoản đã có;
-  endif
-}
-
-partition #EAF3FF "02  Thiết lập lớp học phần" {
-  :Quản lý chọn hoặc tạo môn học;
-  :Tạo lớp theo học kỳ và năm học;
-  :Gán giảng viên phụ trách;
-  :Đưa sinh viên vào lớp;
-  if (Thông tin lớp và phân công hợp lệ?) then (Có)
-    :Hệ thống lưu lớp, giảng viên và danh sách lớp;
-  else (Không)
-    :Báo lỗi để Quản lý điều chỉnh;
-    stop
-  endif
-}
-
-partition #E9F7F2 "03  Dữ liệu sẵn sàng sử dụng" {
-  :Giảng viên thấy lớp mình phụ trách;
-  :Sinh viên thấy lớp mình đang học;
-}
-stop
-@enduml
-```
-
-### 4.4. Quản lý đợt Đồ án và lịch bảo vệ
-
-Quản lý thực hiện hai việc ở hai thời điểm. Đợt được thiết lập trước khi sinh viên đăng ký. Lịch bảo vệ được xếp cho hồ sơ đã duyệt.
-
-```plantuml
-@startuml
-title HTTT07 • Quản lý đợt Đồ án và lịch bảo vệ
-skinparam shadowing false
-skinparam DefaultFontName SansSerif
-skinparam defaultFontColor #172B4D
-skinparam ArrowColor #587499
-skinparam ActivityBorderColor #6586AB
-skinparam ActivityBackgroundColor #FFFFFF
-skinparam ActivityDiamondBackgroundColor #FFF4DC
-skinparam ActivityDiamondBorderColor #A48347
-skinparam PartitionBorderColor #C8D8EB
-
-start
-partition #FFF5E8 "01  Thiết lập đợt Đồ án" {
-  :Quản lý tạo đợt Đồ án;
-  :Đặt thời gian đăng ký và các mốc nộp;
-  if (Kế hoạch hợp lệ?) then (Có)
-    :Hệ thống lưu đợt và kế hoạch;
-  else (Không)
-    :Báo lỗi để Quản lý điều chỉnh;
-    stop
-  endif
-}
-
-partition #F3F5F8 "02  Khi có hồ sơ để xếp lịch" {
-  :Quản lý chọn hồ sơ thuộc đợt;
-  if (Hồ sơ đã duyệt?) then (Có)
-    :Tạo hoặc chọn hội đồng và thành viên;
-    :Chọn thời gian và địa điểm;
-    :Phân công giảng viên nhập điểm hội đồng;
-    :Hệ thống lưu lịch và phân công;
-  else (Không)
-    :Hiển thị lý do hồ sơ chưa được xếp lịch;
-    stop
-  endif
-}
-
-partition #E9F7F2 "03  Sử dụng lịch đã lưu" {
-  :Sinh viên xem lịch bảo vệ;
-  :Giảng viên được phân công nhập điểm sau khi hội đồng chấm;
-  :Quản lý xác nhận vắng nếu sinh viên không bảo vệ;
-  :Quản lý duyệt công bố kết quả đã có điểm hoặc đã xác nhận vắng;
-}
-stop
-@enduml
-```
-
-Quản lý có thể xem thống kê theo đợt ở bất kỳ thời điểm nào. Hồ sơ đã duyệt chưa có điểm và chưa được xác nhận vắng được tính vào nhóm chưa chấm, kể cả khi đã qua giờ bảo vệ. Chỉ kết quả đã được Quản lý công bố mới hiển thị cho sinh viên.
-
-## Ghi chú nghiệp vụ
-
-- Tiểu luận kiểm tra người gửi, tư cách thuộc lớp, thời gian đăng ký và số thành viên đã xác nhận. Nhóm trưởng được tính vào sĩ số; chỉ nhóm trưởng hiện tại được chuyển quyền cho thành viên đã xác nhận.
-- Bản thiết kế dùng phương án một điểm chung cho nhóm Tiểu luận và một điểm tổng hợp của hội đồng cho mỗi hồ sơ Đồ án. Thống kê đếm theo sinh viên.
-- Hồ sơ bị từ chối có thể sửa rồi gửi lại hoặc tạo hồ sơ mới trong hạn. Bài nộp trễ vẫn được nhận và đánh dấu trễ; được thay file. Ngưỡng đạt cần xác nhận. Nhánh giảng viên yêu cầu sửa trước khi quyết định là chức năng bổ sung.
-
+Sơ đồ không có kho đề tài gợi ý, lời mời xác nhận nhóm, hội đồng, lịch bảo vệ hoặc điểm từng giám khảo. Email đặt lại mật khẩu thuộc chức năng tài khoản; nộp trễ và Quản lý duyệt công bố thuộc bản đầu.
