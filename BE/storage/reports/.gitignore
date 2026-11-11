@@ -1,0 +1,4 @@
+# 1. Giữ thư mục báo cáo trong Git bằng chính file này.
+# 2. Bỏ qua tất cả file báo cáo tải lên; chỉ metadata nằm trong PostgreSQL.
+*
+!.gitignore

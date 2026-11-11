@@ -230,7 +230,7 @@ buoi_bao_ve |o--o{ ho_so_dang_ky
 | Bảng | Cột cần lưu | Ý nghĩa |
 | --- | --- | --- |
 | **moc_nop** | id, lop_id?, dot_id?, ten_moc, loai, han_nop | Mỗi mốc thuộc một lớp hoặc một đợt. Loại gồm DINH_KY và BAO_CAO_CUOI. |
-| **bai_nop** | id, ho_so_id, moc_nop_id, nguoi_nop_id, duong_dan_tep, ten_tep_goc, nop_luc, nop_tre, nhan_xet?, nguoi_nhan_xet_id?, nhan_xet_luc? | Một bài hiện hành cho mỗi cặp hồ sơ và mốc; được thay file, ghi thời điểm lần nộp mới nhất và nop_tre = true nếu thời điểm đó quá hạn. Người nộp tham chiếu sinh_vien. Người nhận xét tham chiếu giang_vien. PostgreSQL lưu thông tin file; nội dung file ở thư mục backend. |
+| **bai_nop** | id, ho_so_id, moc_nop_id, nguoi_nop_id, duong_dan_tep, ten_tep_goc, nop_luc, nop_tre, nhan_xet?, nguoi_nhan_xet_id?, nhan_xet_luc? | Một bài hiện hành cho mỗi cặp hồ sơ và mốc; được thay file, ghi thời điểm lần nộp mới nhất và nop_tre = true nếu thời điểm đó quá hạn. Người nộp tham chiếu sinh_vien. Người nhận xét tham chiếu giang_vien. PostgreSQL lưu thông tin file; nội dung file ở thư mục `BE/storage/reports/`. |
 | **hoi_dong** | id, dot_id, ten_hoi_dong | Hội đồng thuộc một đợt Đồ án. |
 | **thanh_vien_hoi_dong** | hoi_dong_id, giang_vien_id | Khóa chính ghép (hoi_dong_id, giang_vien_id). |
 | **buoi_bao_ve** | id, hoi_dong_id, bat_dau_luc, dia_diem, nguoi_nhap_diem_id? | Một buổi có thể chứa nhiều hồ sơ cùng đợt. Người được phân công nhập điểm tham chiếu giang_vien. |

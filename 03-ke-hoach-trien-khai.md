@@ -1,6 +1,6 @@
 # HTTT07 — Kế hoạch triển khai
 
-Triển khai theo 5 chặng. Mỗi chặng có kết quả có thể chạy hoặc kiểm tra trước khi chuyển tiếp. Frontend dùng **ReactJS**, backend dùng **FastAPI theo OOP** và **JWT**. Cơ sở dữ liệu dùng **PostgreSQL đã cài trên máy phát triển**.
+Triển khai theo 5 chặng. Mỗi chặng có kết quả có thể chạy hoặc kiểm tra trước khi chuyển tiếp. `FE/` dùng **ReactJS**, `BE/` dùng **FastAPI theo OOP** và **JWT**; `DB/` giữ migration và dữ liệu mẫu cho **PostgreSQL đã cài trên máy phát triển**.
 
 Tài liệu đối chiếu gồm [phân tích nghiệp vụ](01-phan-tich-nghiep-vu.md), [tám sơ đồ UML](02-so-do-uml(1).md) và [thiết kế cơ sở dữ liệu](04-thiet-ke-co-so-du-lieu.md).
 
@@ -14,7 +14,7 @@ Tài liệu đối chiếu gồm [phân tích nghiệp vụ](01-phan-tich-nghiep
 
 ## Chặng 1 — Môi trường và thiết kế dữ liệu
 
-- [ ] Khởi tạo thư mục `backend/` và `frontend/`. Tạo môi trường Python và dự án ReactJS. Tạo cơ sở dữ liệu phát triển `httt07` trên PostgreSQL local và cấu hình kết nối qua biến môi trường.
+- [ ] Từ bộ khung `BE/`, `DB/` và `FE/`, tạo môi trường Python và dự án ReactJS. Tạo cơ sở dữ liệu phát triển `httt07` trên PostgreSQL local và cấu hình kết nối qua biến môi trường.
 - [ ] Vẽ ERD từ nghiệp vụ. Chốt bảng, khóa chính, khóa ngoại và ràng buộc cho tài khoản, lớp học phần, lời mời nhóm, hồ sơ bị từ chối và gửi lại, mốc nộp, bài nộp trễ, bảo vệ và duyệt công bố kết quả. Xác định cách lưu hai loại hồ sơ trước khi viết migration.
 - [ ] Tạo migration nền và một API kiểm tra chạy thử. Kết nối một màn hình React với API để kiểm tra đường đi từ trình duyệt đến backend. Kiểm tra kết nối cơ sở dữ liệu riêng.
 - [ ] Tổ chức backend sao cho route nhận yêu cầu, lớp nghiệp vụ kiểm tra quy tắc, và lớp truy cập dữ liệu đọc hoặc ghi PostgreSQL. Đối chiếu với trách nhiệm của các lớp trong sơ đồ UML.

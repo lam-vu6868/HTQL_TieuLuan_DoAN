@@ -1,0 +1,5 @@
+# Gói Python của BE.
+# 1. Khi làm chặng 1, thêm FastAPI, ASGI server, SQLAlchemy và PostgreSQL driver.
+# 2. Khi làm JWT/migration/test, thêm gói cần dùng với phiên bản cố định.
+# 3. Sau khi cài, chạy kiểm thử và ghi lệnh cài đặt trong BE/README.md.
+# Hiện chưa có mã chạy nên chưa khóa phiên bản gói nào.
