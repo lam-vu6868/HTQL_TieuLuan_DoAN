@@ -62,7 +62,7 @@ Cả hai luồng cho phép thay file đã nộp, ghi nhận thời điểm nộp
 ## 6. Công nghệ và thiết kế hướng đối tượng
 
 - **Frontend** dùng ReactJS cho web trên trình duyệt.
-- **Backend** dùng FastAPI và Python để xây dựng RESTful API. Xác thực bằng JWT.
+- **Backend** dùng FastAPI async và Python để xây dựng RESTful API. Xác thực bằng JWT; truy vấn PostgreSQL qua SQLAlchemy AsyncSession.
 - **Cơ sở dữ liệu** dùng PostgreSQL đã cài trên máy phát triển.
 - **Yêu cầu môn học** là tổ chức backend theo lập trình hướng đối tượng (OOP).
 

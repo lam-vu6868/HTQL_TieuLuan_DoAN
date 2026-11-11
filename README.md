@@ -1,6 +1,6 @@
 # HTTT07 — Quản lý đề tài Tiểu luận và Đồ án tốt nghiệp
 
-Dự án dùng ReactJS (`FE`), FastAPI theo OOP (`BE`) và PostgreSQL (`DB`). **Hiện mới có tài liệu và bộ khung BE/DB; chưa có ứng dụng hoặc migration chạy được.**
+Dự án dùng ReactJS (`FE`), FastAPI async theo OOP (`BE`) và PostgreSQL (`DB`). **Hiện mới có tài liệu và bộ khung BE/DB; chưa có ứng dụng hoặc migration chạy được.**
 
 ## Tài liệu
 

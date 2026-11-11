@@ -1,7 +1,7 @@
-"""Kết nối Alembic với model BE và PostgreSQL.
+"""Chạy migration Alembic bằng SQLAlchemy AsyncEngine.
 
-1. Nạp DATABASE_URL từ cấu hình môi trường, không ghi URL thật vào alembic.ini.
-2. Nhập toàn bộ BE/app/models rồi gán Base.metadata cho target_metadata.
-3. Viết run_migrations_online(); dùng kết nối và transaction của Alembic.
-4. Kiểm tra đường import BE khi chạy Alembic từ thư mục gốc dự án.
+1. Nạp DATABASE_URL từ môi trường; nhập BE/app/models và gán Base.metadata cho target_metadata.
+2. Viết do_run_migrations(connection) gọi Alembic context trên kết nối đồng bộ do run_sync cấp.
+3. Viết async def run_async_migrations(): tạo async_engine_from_config(), async with connect(), await connection.run_sync(do_run_migrations), await dispose().
+4. Viết run_migrations_online() gọi asyncio.run(run_async_migrations()); kiểm tra đường import BE từ thư mục gốc.
 """
