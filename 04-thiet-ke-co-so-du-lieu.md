@@ -134,11 +134,12 @@ Trạng thái: `NHAP → CHO_DUYET → DA_DUYET` hoặc `TU_CHOI`. Trong hạn �
 @startuml
 title Mốc nộp Đồ án, bài nộp và điểm từng sinh viên
 entity dot_do_an
+entity phan_cong_huong_dan
 entity sinh_vien
 entity ho_so_dang_ky
 entity moc_nop {
   * id : bigint <<PK>>
-  * dot_id : bigint <<FK>>
+  * phan_cong_id : bigint <<FK>>
   * han_nop : timestamptz
   * la_moc_cuoi : bool
 }
@@ -155,7 +156,7 @@ entity ket_qua {
   * diem : numeric(4,2)
   * trang_thai_cong_bo : text
 }
-dot_do_an ||--o{ moc_nop
+phan_cong_huong_dan ||--o{ moc_nop
 ho_so_dang_ky ||--o{ bai_nop
 moc_nop |o--o{ bai_nop
 ho_so_dang_ky ||--o{ ket_qua
@@ -165,8 +166,8 @@ sinh_vien ||--o{ ket_qua
 
 | Bảng | Cột chính và quy tắc |
 | --- | --- |
-| `moc_nop` | `id`, `dot_id`, `ten_moc`, `thu_tu`, `han_nop`, `la_moc_cuoi`. Chỉ Đồ án có nhiều mốc; một mốc cuối cho mỗi đợt. |
-| `bai_nop` | `id`, `ho_so_id`, `moc_nop_id?`, `nguoi_nop_id`, `duong_dan_tep`, `ten_tep_goc`, `nop_luc`, `nop_tre`, `nhan_xet?`, `nguoi_nhan_xet_id?`, `nhan_xet_luc?`. Tiểu luận có `moc_nop_id = NULL` và so với `lop_hoc_phan.han_nop`; Đồ án phải có mốc cùng đợt. Lưu một file hiện hành cho mỗi hồ sơ/mốc. |
+| `moc_nop` | `id`, `phan_cong_id`, `ten_moc`, `thu_tu`, `han_nop`, `la_moc_cuoi`. GVHD được phân công đặt nhiều mốc cho sinh viên đó; mỗi phân công có một mốc cuối. |
+| `bai_nop` | `id`, `ho_so_id`, `moc_nop_id?`, `nguoi_nop_id`, `duong_dan_tep`, `ten_tep_goc`, `nop_luc`, `nop_tre`, `nhan_xet?`, `nguoi_nhan_xet_id?`, `nhan_xet_luc?`. Tiểu luận có `moc_nop_id = NULL` và so với `lop_hoc_phan.han_nop`; Đồ án phải có mốc thuộc đúng phân công của hồ sơ. Lưu một file hiện hành cho mỗi hồ sơ/mốc. |
 | `ket_qua` | PK `(ho_so_id, sinh_vien_id)`, `diem`, `nguoi_nhap_id`, `nhap_luc`, `trang_thai_cong_bo`, `nguoi_cong_bo_id?`, `cong_bo_luc?`. Mỗi sinh viên của hồ sơ có một điểm. Chỉ Quản lý công bố; sinh viên chỉ thấy dòng điểm của mình đã công bố. |
 
 ## 4. Ràng buộc khi viết migration và service
@@ -176,7 +177,7 @@ sinh_vien ||--o{ ket_qua
 | Thành viên đúng lớp và nhóm | FK ghép `(lop_id, sinh_vien_id)` tới `sinh_vien_lop`, FK ghép `(nhom_id, lop_id)` tới nhóm. UQ `(lop_id, sinh_vien_id)` ở bảng thành viên. Chỉ mục duy nhất có điều kiện đảm bảo mỗi nhóm đúng một trưởng nhóm. Chuyển trưởng nhóm trong một giao dịch. |
 | Giới hạn nhóm và hồ sơ | Service khóa nhóm/lớp khi thêm thành viên hoặc gửi hồ sơ; kiểm tra sĩ số, quyền trưởng nhóm và hồ sơ cá nhân/nhóm xung đột. Không sửa thành viên sau khi gửi hồ sơ. |
 | Phân công GVHD | UQ `(dot_id, sinh_vien_id)`; service kiểm tra `phan_cong_id` đúng đợt, sinh viên và giảng viên xét duyệt. |
-| Mốc Đồ án | UQ `(dot_id, thu_tu)` và chỉ mục duy nhất có điều kiện trên `dot_id` khi `la_moc_cuoi = true`; trước khi mở đợt phải có đúng một mốc cuối. |
+| Mốc Đồ án | UQ `(phan_cong_id, thu_tu)` và chỉ mục duy nhất có điều kiện trên `phan_cong_id` khi `la_moc_cuoi = true`; service chỉ cho GVHD của phân công đặt mốc và yêu cầu đúng một mốc cuối trước khi sinh viên nộp. |
 | Hồ sơ đang xử lý | Chỉ mục duy nhất có điều kiện cho `CHO_DUYET`, `DA_DUYET` theo lớp/nhóm hoặc đợt/sinh viên. Hồ sơ `TU_CHOI` không chiếm suất. |
 | Bài nộp hiện hành | UQ có điều kiện trên `ho_so_id` khi `moc_nop_id IS NULL` cho Tiểu luận; UQ `(ho_so_id, moc_nop_id)` khi mốc có giá trị cho Đồ án. Khi thay file, cập nhật `nop_luc`, `nop_tre`; nộp trễ vẫn nhận. |
 | Điểm và công bố | CHECK `0 <= diem <= 10`. Điểm chung: service ghi cùng điểm vào từng dòng `ket_qua` của thành viên; điểm riêng: ghi từng dòng theo điểm giảng viên nhập. Đổi `che_do_cham` sau khi đã chấm phải bị chặn. Chỉ công bố khi mọi thành viên hồ sơ có điểm; công bố cả nhóm trong một giao dịch. |
