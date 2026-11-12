@@ -20,7 +20,8 @@ rectangle HTTT07 {
   usecase "Nộp hoặc thay file báo cáo" as Submit
   usecase "Nhận xét và nhập điểm" as Grade
   usecase "Xem điểm đã công bố" as View
-  usecase "Tạo lớp, đợt, gán GVHD\nvà đặt hạn nộp" as Setup
+  usecase "Tạo lớp, đợt và gán GVHD" as Setup
+  usecase "Đặt hạn nộp Tiểu luận\nvà mốc nộp Đồ án" as Deadlines
   usecase "Duyệt công bố điểm" as Publish
   usecase "Xem thống kê sinh viên đạt" as Stats
 }
@@ -33,6 +34,7 @@ GV -- Login
 GV -- Review
 GV -- Grade
 GV -- Stats
+GV -- Deadlines
 QL -- Login
 QL -- Setup
 QL -- Publish
@@ -97,7 +99,7 @@ LopHocPhan "0..1" -- "0..*" HoSoDangKy
 DotDoAn "0..1" -- "0..*" HoSoDangKy
 DotDoAn "1" -- "0..*" PhanCongHuongDan
 PhanCongHuongDan "0..1" -- "0..*" HoSoDangKy
-DotDoAn "1" -- "0..*" MocNop
+PhanCongHuongDan "1" -- "0..*" MocNop
 HoSoDangKy "1" -- "0..*" BaiNop
 BaiNop "0..*" -- "0..1" MocNop
 HoSoDangKy "1" -- "0..*" KetQua
@@ -105,7 +107,7 @@ DichVuDuyetDeTai ..> HoSoDangKy
 @enduml
 ```
 
-Hồ sơ Tiểu luận gắn lớp, có thể gắn nhóm; hồ sơ Đồ án gắn đợt và phân công GVHD. Tiểu luận lấy hạn từ lớp, Đồ án lấy hạn từ mốc. `KetQua` ứng với **một sinh viên trong một hồ sơ**; điểm chung ghi cùng giá trị cho các thành viên, điểm riêng ghi từng giá trị. Quản lý chỉ công bố khi hồ sơ đã đủ điểm.
+Hồ sơ Tiểu luận gắn lớp, có thể gắn nhóm; hồ sơ Đồ án gắn đợt và phân công GVHD. Tiểu luận lấy hạn từ lớp, Đồ án lấy hạn từ mốc do GVHD của phân công đó đặt. `KetQua` ứng với **một sinh viên trong một hồ sơ**; điểm chung ghi cùng giá trị cho các thành viên, điểm riêng ghi từng giá trị. Quản lý chỉ công bố khi hồ sơ đã đủ điểm.
 
 ## 3. Sơ đồ Tuần tự duyệt đề tài
 
@@ -209,7 +211,8 @@ stop
 ```plantuml
 @startuml
 start
-:Quản lý tạo đợt, gán GVHD và các mốc nộp;
+:Quản lý tạo đợt và gán GVHD;
+:GVHD đặt các mốc nộp cho sinh viên được phân công;
 :Sinh viên tự đề xuất đề tài và gửi GVHD được gán;
 if (GVHD duyệt?) then (Có)
   :Hồ sơ DA_DUYET;

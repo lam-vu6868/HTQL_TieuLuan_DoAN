@@ -12,7 +12,7 @@ Nhóm hai người làm luồng chạy được trước: **đăng ký → duy�
 
 ## Chặng 2 — Đăng nhập, lớp và phân công
 
-- [ ] Quản lý cấp tài khoản, tạo môn/lớp/đợt, gán giảng viên lớp, xếp sinh viên vào lớp và gán GVHD theo sinh viên/đợt.
+- [ ] Quản lý cấp tài khoản, tạo môn/lớp/đợt, gán giảng viên lớp, xếp sinh viên vào lớp và gán GVHD theo sinh viên/đợt. GVHD đặt mốc nộp Đồ án cho từng sinh viên được phân công.
 - [ ] Làm đăng nhập JWT và email đặt lại mật khẩu một lần, có hạn dùng; kiểm tra quyền theo vai trò và đối tượng. Sinh viên xem lớp/đợt của mình; giảng viên xem hồ sơ trong phạm vi phân công.
 
 **Đạt khi:** cả ba vai trò đăng nhập; giảng viên khác lớp hoặc khác phân công GVHD không thể xét hồ sơ.
@@ -27,7 +27,7 @@ Nhóm hai người làm luồng chạy được trước: **đăng ký → duy�
 
 ## Chặng 4 — Nộp, chấm và công bố
 
-- [ ] Tiểu luận có một hạn nộp; Đồ án có mốc trung gian và mốc cuối. Cho nộp/thay file, nhận cả nộp trễ và đánh dấu `nop_tre`.
+- [ ] Tiểu luận có một hạn nộp; Đồ án có mốc trung gian và mốc cuối theo từng phân công GVHD. Cho nộp/thay file, nhận cả nộp trễ và đánh dấu `nop_tre`.
 - [ ] Giảng viên nhận xét. Tiểu luận chấm chung hoặc chấm riêng theo cấu hình lớp; lưu một dòng điểm cho mỗi sinh viên. GVHD nhập điểm Đồ án ở mốc cuối.
 - [ ] Quản lý công bố khi hồ sơ đủ điểm; sinh viên chỉ xem điểm của mình đã công bố. Tính thống kê đạt/không đạt/chưa chấm theo sinh viên, ngưỡng mặc định 4,0; GV lớp chỉnh ngưỡng lớp, GVHD chỉnh ngưỡng hồ sơ Đồ án trước công bố.
 

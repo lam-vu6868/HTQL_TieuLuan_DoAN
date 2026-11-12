@@ -4,7 +4,7 @@
 
 Nhóm hai người triển khai luồng **đăng ký đề tài → giảng viên duyệt → nộp báo cáo → giảng viên nhận xét, chấm điểm → sinh viên xem kết quả**. Tiểu luận và Đồ án dùng chung phần đăng ký, bài nộp và kết quả; khác nhau ở người thực hiện và cách gán giảng viên. Phạm vi lấy hướng thu gọn trong `idae.md`, đồng thời giữ quyết định sau cùng của nhóm về nộp trễ, công bố điểm và hai cách chấm Tiểu luận.
 
-Đề bài gốc yêu cầu nộp theo định kỳ, quản lý thời gian theo kế hoạch, thống kê số sinh viên đạt và bốn loại sơ đồ UML. Bản đầu giữ một hạn nộp cho Tiểu luận; Đồ án có nhiều mốc do Quản lý thiết lập.
+Đề bài gốc yêu cầu nộp theo định kỳ, quản lý thời gian theo kế hoạch, thống kê số sinh viên đạt và bốn loại sơ đồ UML. Bản đầu giữ một hạn nộp cho Tiểu luận; Đồ án có nhiều mốc do GVHD thiết lập cho từng sinh viên được phân công.
 
 | Quy trình | Người đăng ký | Người duyệt và chấm |
 | --- | --- | --- |
@@ -17,8 +17,8 @@ Nhóm hai người triển khai luồng **đăng ký đề tài → giảng viê
 | --- | --- |
 | Sinh viên | Xem lớp/đợt của mình, tự đề xuất đề tài, xem hồ sơ và nhận xét, nộp bài cá nhân, xem điểm đã công bố. |
 | Nhóm trưởng | Tạo nhóm Tiểu luận, tìm sinh viên bằng mã trong cùng lớp rồi thêm vào nhóm, chuyển quyền trưởng nhóm cho thành viên, gửi hồ sơ và nộp bài cho nhóm. |
-| Giảng viên | Duyệt/từ chối hồ sơ thuộc lớp mình hoặc được gán hướng dẫn; nhận xét, nhập điểm và xem thống kê trong phạm vi được phân công. Giảng viên lớp đặt hạn nộp Tiểu luận. |
-| Quản lý | Cấp tài khoản, tạo môn/lớp/đợt, xếp sinh viên vào lớp, gán giảng viên phụ trách và GVHD, đặt mốc nộp Đồ án, duyệt công bố điểm. |
+| Giảng viên | Duyệt/từ chối hồ sơ thuộc lớp mình hoặc được gán hướng dẫn; nhận xét, nhập điểm và xem thống kê trong phạm vi được phân công. Giảng viên lớp đặt hạn nộp Tiểu luận; GVHD đặt mốc nộp Đồ án cho sinh viên mình hướng dẫn. |
+| Quản lý | Cấp tài khoản, tạo môn/lớp/đợt, xếp sinh viên vào lớp, gán giảng viên phụ trách và GVHD, duyệt công bố điểm. |
 
 Nhóm trưởng là quyền của sinh viên trong một nhóm, không phải vai trò tài khoản riêng. Mọi API kiểm tra vai trò và quan hệ với lớp, nhóm hoặc đợt. Thành viên thường xem hồ sơ, bài nộp và kết quả nhóm; chỉ trưởng nhóm hiện tại được gửi hồ sơ, nộp bài và chuyển quyền.
 
@@ -38,7 +38,7 @@ Tiểu luận chỉ có **một hạn nộp cố định**, không có chuỗi m
 
 ## 5. Đồ án tốt nghiệp
 
-1. Quản lý tạo đợt, gán GVHD cho từng sinh viên và thiết lập các mốc nộp theo kế hoạch; mốc cuối dùng để chấm điểm.
+1. Quản lý tạo đợt và gán GVHD cho từng sinh viên. GVHD thiết lập các mốc nộp cho sinh viên mình hướng dẫn; mốc cuối dùng để chấm điểm.
 2. Sinh viên tự nhập tên và mô tả đề tài rồi gửi hồ sơ đến GVHD đã được gán. GVHD duyệt hoặc từ chối kèm nhận xét; hồ sơ bị từ chối được sửa rồi gửi lại hoặc tạo mới trong hạn.
 3. Sinh viên nộp hoặc thay file theo mốc. GVHD nhận xét mốc trung gian và nhập điểm ở mốc cuối. Các thầy có thể thống nhất điểm bên ngoài hệ thống; trong bản đầu chỉ GVHD nhập điểm vào hệ thống.
 4. Quản lý duyệt công bố, sau đó sinh viên xem kết quả. Hồ sơ chưa được nhập điểm là **chưa chấm**, không tự động thành không đạt.
