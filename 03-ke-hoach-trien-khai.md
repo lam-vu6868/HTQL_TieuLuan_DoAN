@@ -12,10 +12,10 @@ Nhóm hai người làm luồng chạy được trước: **đăng ký → duy�
 
 ## Chặng 2 — Đăng nhập, lớp và phân công
 
-- [ ] Quản lý cấp tài khoản, tạo môn/lớp/đợt, gán giảng viên lớp, xếp sinh viên vào lớp và gán GVHD theo sinh viên/đợt. GVHD đặt mốc nộp Đồ án cho từng sinh viên được phân công.
-- [ ] Làm đăng nhập JWT và email đặt lại mật khẩu một lần, có hạn dùng; kiểm tra quyền theo vai trò và đối tượng. Sinh viên xem lớp/đợt của mình; giảng viên xem hồ sơ trong phạm vi phân công.
+- [ ] Quản lý cấp tài khoản, tạo môn/lớp/đợt, gán giảng viên lớp, xếp sinh viên vào lớp và gán GVHD theo sinh viên/đợt.
+- [ ] Làm đăng nhập JWT và email đặt lại mật khẩu một lần, có hạn dùng; kiểm tra quyền theo vai trò và đối tượng. Sinh viên xem lớp/đợt của mình; giảng viên xem lớp và phân công của mình.
 
-**Đạt khi:** cả ba vai trò đăng nhập; giảng viên khác lớp hoặc khác phân công GVHD không thể xét hồ sơ.
+**Đạt khi:** cả ba vai trò đăng nhập và chỉ xem được lớp, đợt hoặc phân công thuộc quyền của mình.
 
 ## Chặng 3 — Đăng ký và duyệt đề tài
 
@@ -23,15 +23,15 @@ Nhóm hai người làm luồng chạy được trước: **đăng ký → duy�
 - [ ] Đồ án: Quản lý gán GVHD trước; sinh viên tự nhập tên/mô tả đề tài và gửi đúng GVHD. Không làm kho đề tài gợi ý.
 - [ ] Hai luồng: giảng viên duyệt hoặc từ chối kèm lý do; cho sửa hồ sơ cũ hoặc tạo hồ sơ mới trong hạn. Xem đề tài đã đăng ký để tự kiểm tra trùng, không ép tên duy nhất.
 
-**Đạt khi:** hồ sơ hai luồng đi từ gửi đến duyệt/từ chối; gửi sai quyền, quá hạn đăng ký, nhóm vượt sĩ số hoặc sai GVHD bị chặn.
+**Đạt khi:** hồ sơ hai luồng đi từ gửi đến duyệt/từ chối; gửi sai quyền, quá hạn đăng ký, nhóm vượt sĩ số hoặc sai GVHD bị chặn; giảng viên khác lớp hoặc khác phân công GVHD không thể xét hồ sơ.
 
 ## Chặng 4 — Nộp, chấm và công bố
 
-- [ ] Tiểu luận có một hạn nộp; Đồ án có mốc trung gian và mốc cuối theo từng phân công GVHD. Cho nộp/thay file, nhận cả nộp trễ và đánh dấu `nop_tre`.
+- [ ] Tiểu luận có một hạn nộp; GVHD đặt mốc trung gian và mốc cuối cho từng sinh viên được phân công. Cho nộp/thay file vào `BE/storage/reports/`, chỉ lưu đường dẫn nội bộ trong PostgreSQL; nhận cả nộp trễ và đánh dấu `nop_tre`.
 - [ ] Giảng viên nhận xét. Tiểu luận chấm chung hoặc chấm riêng theo cấu hình lớp; lưu một dòng điểm cho mỗi sinh viên. GVHD nhập điểm Đồ án ở mốc cuối.
 - [ ] Quản lý công bố khi hồ sơ đủ điểm; sinh viên chỉ xem điểm của mình đã công bố. Tính thống kê đạt/không đạt/chưa chấm theo sinh viên, ngưỡng mặc định 4,0; GV lớp chỉnh ngưỡng lớp, GVHD chỉnh ngưỡng hồ sơ Đồ án trước công bố.
 
-**Đạt khi:** hai luồng chạy qua giao diện từ đăng ký đến kết quả; điểm chưa công bố không lộ ra API sinh viên.
+**Đạt khi:** hai luồng chạy qua giao diện từ đăng ký đến kết quả; chỉ người có quyền với hồ sơ tải được file và điểm chưa công bố không lộ ra API sinh viên.
 
 ## Chặng 5 — Kiểm tra và nộp bài
 

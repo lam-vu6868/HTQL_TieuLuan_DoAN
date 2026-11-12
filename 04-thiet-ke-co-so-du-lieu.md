@@ -118,7 +118,7 @@ phan_cong_huong_dan |o--o{ ho_so_dang_ky
 
 | Bảng | Cột chính và quy tắc |
 | --- | --- |
-| `dot_do_an` | `id`, `ma_dot`, `ten_dot`, `bat_dau_dang_ky`, `han_dang_ky`, `nguong_dat` mặc định 4,0. |
+| `dot_do_an` | `id`, `ma_dot`, `ten_dot`, `bat_dau_dang_ky`, `han_dang_ky`. Ngưỡng đạt của Đồ án lưu theo từng hồ sơ. |
 | `phan_cong_huong_dan` | `id`, `dot_id`, `sinh_vien_id`, `giang_vien_id`; UQ `(dot_id, sinh_vien_id)`. Quản lý gán trước khi sinh viên đăng ký. Hồ sơ Đồ án tham chiếu phân công này, không cho sinh viên tự chọn GVHD. |
 | `nhom_tieu_luan` | `id`, `lop_id`, `ten_nhom`. Nhóm thuộc một lớp. |
 | `thanh_vien_nhom` | PK `(nhom_id, sinh_vien_id)`, thêm `lop_id`, `la_truong_nhom`. Không có trạng thái lời mời; trưởng nhóm thêm sinh viên cùng lớp bằng mã. UQ `(lop_id, sinh_vien_id)` chặn ở hai nhóm trong một lớp. |
@@ -170,11 +170,13 @@ sinh_vien ||--o{ ket_qua
 | `bai_nop` | `id`, `ho_so_id`, `moc_nop_id?`, `nguoi_nop_id`, `duong_dan_tep`, `ten_tep_goc`, `nop_luc`, `nop_tre`, `nhan_xet?`, `nguoi_nhan_xet_id?`, `nhan_xet_luc?`. Tiểu luận có `moc_nop_id = NULL` và so với `lop_hoc_phan.han_nop`; Đồ án phải có mốc thuộc đúng phân công của hồ sơ. Lưu một file hiện hành cho mỗi hồ sơ/mốc. |
 | `ket_qua` | PK `(ho_so_id, sinh_vien_id)`, `diem`, `nguoi_nhap_id`, `nhap_luc`, `trang_thai_cong_bo`, `nguoi_cong_bo_id?`, `cong_bo_luc?`. Mỗi sinh viên của hồ sơ có một điểm. Chỉ Quản lý công bố; sinh viên chỉ thấy dòng điểm của mình đã công bố. |
 
+File báo cáo thật nằm ở `BE/storage/reports/`, không lưu dưới dạng BLOB trong PostgreSQL. `bai_nop.duong_dan_tep` là đường dẫn nội bộ do BE tạo; API kiểm tra quyền với hồ sơ trước khi tải file và không trả đường dẫn này cho FE. Khi thay file, chỉ xóa file cũ sau khi file mới và bản ghi CSDL đã được lưu thành công.
+
 ## 4. Ràng buộc khi viết migration và service
 
 | Quy tắc | Cách bảo đảm |
 | --- | --- |
-| Thành viên đúng lớp và nhóm | FK ghép `(lop_id, sinh_vien_id)` tới `sinh_vien_lop`, FK ghép `(nhom_id, lop_id)` tới nhóm. UQ `(lop_id, sinh_vien_id)` ở bảng thành viên. Chỉ mục duy nhất có điều kiện đảm bảo mỗi nhóm đúng một trưởng nhóm. Chuyển trưởng nhóm trong một giao dịch. |
+| Thành viên đúng lớp và nhóm | FK ghép `(lop_id, sinh_vien_id)` tới `sinh_vien_lop`, FK ghép `(nhom_id, lop_id)` tới nhóm. UQ `(lop_id, sinh_vien_id)` ở bảng thành viên. Chỉ mục duy nhất có điều kiện chặn hai trưởng nhóm; service đảm bảo nhóm có một trưởng nhóm. Chuyển trưởng nhóm trong một giao dịch. |
 | Giới hạn nhóm và hồ sơ | Service khóa nhóm/lớp khi thêm thành viên hoặc gửi hồ sơ; kiểm tra sĩ số, quyền trưởng nhóm và hồ sơ cá nhân/nhóm xung đột. Không sửa thành viên sau khi gửi hồ sơ. |
 | Phân công GVHD | UQ `(dot_id, sinh_vien_id)`; service kiểm tra `phan_cong_id` đúng đợt, sinh viên và giảng viên xét duyệt. |
 | Mốc Đồ án | UQ `(phan_cong_id, thu_tu)` và chỉ mục duy nhất có điều kiện trên `phan_cong_id` khi `la_moc_cuoi = true`; service chỉ cho GVHD của phân công đặt mốc và yêu cầu đúng một mốc cuối trước khi sinh viên nộp. |

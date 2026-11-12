@@ -81,6 +81,7 @@ class MocNop {
 class BaiNop {
   +nopLuc: datetime
   +nopTre: bool
+  +duongDanTep: str
   +thayFile()
   +ghiNhanXet()
 }
@@ -107,7 +108,7 @@ DichVuDuyetDeTai ..> HoSoDangKy
 @enduml
 ```
 
-Hồ sơ Tiểu luận gắn lớp, có thể gắn nhóm; hồ sơ Đồ án gắn đợt và phân công GVHD. Tiểu luận lấy hạn từ lớp, Đồ án lấy hạn từ mốc do GVHD của phân công đó đặt. `KetQua` ứng với **một sinh viên trong một hồ sơ**; điểm chung ghi cùng giá trị cho các thành viên, điểm riêng ghi từng giá trị. Quản lý chỉ công bố khi hồ sơ đã đủ điểm.
+Hồ sơ Tiểu luận gắn lớp, có thể gắn nhóm; hồ sơ Đồ án gắn đợt và phân công GVHD. Tiểu luận lấy hạn từ lớp, Đồ án lấy hạn từ mốc do GVHD của phân công đó đặt. `BaiNop` giữ đường dẫn nội bộ; file thật lưu ở `BE/storage/reports/` và chỉ tải qua API có kiểm tra quyền. `KetQua` ứng với **một sinh viên trong một hồ sơ**; điểm chung ghi cùng giá trị cho các thành viên, điểm riêng ghi từng giá trị. Quản lý chỉ công bố khi hồ sơ đã đủ điểm.
 
 ## 3. Sơ đồ Tuần tự duyệt đề tài
 

@@ -1,6 +1,6 @@
 # HTTT07 — Quản lý đề tài Tiểu luận và Đồ án tốt nghiệp
 
-Dự án dùng ReactJS (`FE`), FastAPI async theo OOP (`BE`) và PostgreSQL (`DB`). **Hiện mới có tài liệu và bộ khung BE/DB; chưa có ứng dụng hoặc migration chạy được.**
+Dự án dùng ReactJS (`FE`), FastAPI async theo OOP (`BE`) và PostgreSQL (`DB`). File báo cáo lưu trên máy chủ BE tại `BE/storage/reports/`; PostgreSQL chỉ giữ thông tin bài nộp và đường dẫn nội bộ. **Hiện mới có tài liệu và bộ khung BE/DB; chưa có ứng dụng hoặc migration chạy được.**
 
 ## Tài liệu
 
@@ -8,6 +8,7 @@ Dự án dùng ReactJS (`FE`), FastAPI async theo OOP (`BE`) và PostgreSQL (`DB
 - [Sơ đồ UML](02-so-do-uml.md): Use Case, Lớp, Tuần tự và Hoạt động.
 - [Kế hoạch triển khai](03-ke-hoach-trien-khai.md): thứ tự thực hiện và tiêu chí hoàn thành từng chặng.
 - [Thiết kế cơ sở dữ liệu](04-thiet-ke-co-so-du-lieu.md): 14 bảng và ràng buộc PostgreSQL dự kiến.
+- [Hướng dẫn làm việc với Git](05-huong-dan-lam-viec-voi-git.md): cách tạo nhánh và ghép công việc của nhóm.
 
 Phạm vi bản đầu: sinh viên tự đề xuất đề tài; Quản lý gán GVHD Đồ án trước; GVHD nhập điểm Đồ án; Tiểu luận chấm chung hoặc riêng từng sinh viên. Nộp trễ được đánh dấu, điểm cần Quản lý duyệt công bố. Hội đồng/lịch bảo vệ và kho đề tài gợi ý để sau.
 

@@ -2,7 +2,7 @@
 
 ## 1. Mục tiêu
 
-Nhóm hai người triển khai luồng **đăng ký đề tài → giảng viên duyệt → nộp báo cáo → giảng viên nhận xét, chấm điểm → sinh viên xem kết quả**. Tiểu luận và Đồ án dùng chung phần đăng ký, bài nộp và kết quả; khác nhau ở người thực hiện và cách gán giảng viên. Phạm vi lấy hướng thu gọn trong `idae.md`, đồng thời giữ quyết định sau cùng của nhóm về nộp trễ, công bố điểm và hai cách chấm Tiểu luận.
+Nhóm hai người triển khai luồng **đăng ký đề tài → giảng viên duyệt → nộp báo cáo → giảng viên nhận xét, chấm điểm → sinh viên xem kết quả**. Tiểu luận và Đồ án dùng chung phần đăng ký, bài nộp và kết quả; khác nhau ở người thực hiện và cách gán giảng viên. Bản đầu thu gọn phạm vi, đồng thời giữ quyết định của nhóm về nộp trễ, công bố điểm và hai cách chấm Tiểu luận.
 
 Đề bài gốc yêu cầu nộp theo định kỳ, quản lý thời gian theo kế hoạch, thống kê số sinh viên đạt và bốn loại sơ đồ UML. Bản đầu giữ một hạn nộp cho Tiểu luận; Đồ án có nhiều mốc do GVHD thiết lập cho từng sinh viên được phân công.
 
@@ -20,7 +20,7 @@ Nhóm hai người triển khai luồng **đăng ký đề tài → giảng viê
 | Giảng viên | Duyệt/từ chối hồ sơ thuộc lớp mình hoặc được gán hướng dẫn; nhận xét, nhập điểm và xem thống kê trong phạm vi được phân công. Giảng viên lớp đặt hạn nộp Tiểu luận; GVHD đặt mốc nộp Đồ án cho sinh viên mình hướng dẫn. |
 | Quản lý | Cấp tài khoản, tạo môn/lớp/đợt, xếp sinh viên vào lớp, gán giảng viên phụ trách và GVHD, duyệt công bố điểm. |
 
-Nhóm trưởng là quyền của sinh viên trong một nhóm, không phải vai trò tài khoản riêng. Mọi API kiểm tra vai trò và quan hệ với lớp, nhóm hoặc đợt. Thành viên thường xem hồ sơ, bài nộp và kết quả nhóm; chỉ trưởng nhóm hiện tại được gửi hồ sơ, nộp bài và chuyển quyền.
+Nhóm trưởng là quyền của sinh viên trong một nhóm, không phải vai trò tài khoản riêng. Mọi API kiểm tra vai trò và quan hệ với lớp, nhóm hoặc đợt. Thành viên thường xem hồ sơ và bài nộp nhóm, nhưng chỉ xem điểm đã công bố của chính mình; chỉ trưởng nhóm hiện tại được gửi hồ sơ, nộp bài và chuyển quyền.
 
 ## 3. Tài khoản và phân công
 
@@ -48,10 +48,10 @@ Hội đồng, thành viên hội đồng, lịch bảo vệ và điểm từng 
 ## 6. Quy tắc chung và phần để sau
 
 - Hồ sơ có trạng thái `NHAP`, `CHO_DUYET`, `DA_DUYET`, `TU_CHOI`. Mỗi sinh viên/nhóm chỉ có một hồ sơ đang chờ hoặc đã duyệt trong cùng lớp/đợt; hồ sơ bị từ chối được giữ để xem lại.
-- File được thay; hệ thống giữ bản hiện hành và thời điểm nộp mới nhất. Nộp sau hạn vẫn được nhận và đánh dấu `nop_tre`.
+- File báo cáo lưu trên máy chủ BE tại `BE/storage/reports/`; PostgreSQL chỉ lưu đường dẫn nội bộ và thông tin bài nộp. Sinh viên/giảng viên tải file qua API sau khi kiểm tra quyền với hồ sơ, không truy cập trực tiếp thư mục lưu trữ. Khi thay file, hệ thống giữ bản hiện hành và thời điểm nộp mới nhất. Nộp sau hạn vẫn được nhận và đánh dấu `nop_tre`.
 - Điểm thang 10; ngưỡng đạt mặc định **4,0**. Giảng viên lớp có thể chỉnh ngưỡng Tiểu luận cho lớp; GVHD có thể chỉnh ngưỡng Đồ án cho hồ sơ mình phụ trách trước khi công bố. Chưa có điểm là chưa chấm. Sinh viên chỉ xem điểm của mình sau khi Quản lý công bố.
 - Để sau: danh sách đề tài giảng viên cung cấp, lời mời/xác nhận tham gia nhóm, hội đồng và lịch bảo vệ trong hệ thống.
 
 ## 7. Công nghệ
 
-Frontend ReactJS; Backend FastAPI async theo OOP, JWT và SQLAlchemy AsyncSession; PostgreSQL lưu dữ liệu. Router nhận HTTP, service kiểm tra nghiệp vụ và quyền, repository truy cập CSDL. Các lớp/method thực tế cần khớp [sơ đồ UML](02-so-do-uml.md) và [thiết kế CSDL](04-thiet-ke-co-so-du-lieu.md).
+Frontend ReactJS; Backend FastAPI async theo OOP, JWT và SQLAlchemy AsyncSession; PostgreSQL lưu dữ liệu nghiệp vụ và thông tin file, còn file báo cáo lưu trên ổ đĩa máy chủ BE. Router nhận HTTP và file tải lên, service kiểm tra nghiệp vụ/quyền và lưu file, repository truy cập CSDL. API kiểm tra quyền trước khi trả file cho người dùng. Các lớp/method thực tế cần khớp [sơ đồ UML](02-so-do-uml.md) và [thiết kế CSDL](04-thiet-ke-co-so-du-lieu.md).

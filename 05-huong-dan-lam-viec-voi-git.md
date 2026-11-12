@@ -17,7 +17,7 @@ git status
 git branch --show-current
 ```
 
-Nếu `git status` báo có file đang sửa/chưa commit, hãy hoàn tất và commit trên nhánh dành cho việc đó trước. Khi tạo hoặc chuyển nhánh với thay đổi chưa commit, Git có thể mang các thay đổi ấy sang nhánh mới. **Trong repo này đang có thay đổi tên file UML chưa commit**; xử lý việc đó trước khi bắt đầu một tính năng khác.
+Nếu `git status` báo có file đang sửa/chưa commit, hãy hoàn tất và commit trên nhánh dành cho việc đó trước. Khi tạo hoặc chuyển nhánh với thay đổi chưa commit, Git có thể mang các thay đổi ấy sang nhánh mới.
 
 ## 2. Tạo nhánh làm việc riêng từ `dev`
 

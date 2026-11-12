@@ -2,7 +2,7 @@
 
 Thư mục này dành cho API FastAPI **bất đồng bộ** của hệ thống Tiểu luận và Đồ án tốt nghiệp. Hiện đây là **bộ khung**, các file Python chỉ mô tả trách nhiệm, chưa có API chạy được.
 
-Phạm vi bản đầu: sinh viên tự đề xuất đề tài; Quản lý gán GVHD trước; Tiểu luận có một hạn nộp và chấm chung/riêng; Đồ án nộp theo mốc và GVHD nhập điểm. Nộp trễ vẫn nhận, Quản lý duyệt công bố. Có email đặt lại mật khẩu; dùng `smtplib` của Python qua `asyncio.to_thread()` nên không thêm thư viện mail. Chưa quản lý hội đồng, lịch bảo vệ hoặc lời mời xác nhận nhóm.
+Phạm vi bản đầu: sinh viên tự đề xuất đề tài; Quản lý gán GVHD trước; Tiểu luận có một hạn nộp và chấm chung/riêng; GVHD đặt mốc Đồ án cho từng sinh viên được phân công rồi nhận xét, nhập điểm. Nộp trễ vẫn nhận, Quản lý duyệt công bố. Có email đặt lại mật khẩu; dùng `smtplib` của Python qua `asyncio.to_thread()` nên không thêm thư viện mail. Chưa quản lý hội đồng, lịch bảo vệ hoặc lời mời xác nhận nhóm.
 
 Mở đầu mỗi file Python là danh sách lớp/hàm dự kiến và các bước cần làm trong chính file đó. Đây là hướng dẫn triển khai, chưa phải mã chức năng.
 
