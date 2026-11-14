@@ -1,0 +1,28 @@
+# Khai báo danh sách các dịch vụ (container) cần chạy cho dự án
+services:
+  # Tên định danh cho dịch vụ database 
+  db:
+    # Tải bộ cài đặt PostgreSQL phiên bản 16 từ kho lưu trữ chính thức của Docker Hub
+    image: postgres:16
+
+    # Đặt tên hiển thị cố định cho container là "topic9_db" (giúp dễ tìm trên Docker Desktop)
+    container_name: topic9_db
+
+    # Đọc các biến môi trường (như User, Password, tên DB) từ file .env
+    env_file:
+      - ./BACKEND/.env
+
+    # Mở cổng kết nối: "Cổng_trên_máy_bạn : Cổng_bên_trong_Docker"
+    # Giúp code Backend của bạn kết nối vào DB qua địa chỉ localhost:5433 
+    # máy có cài postgreSQL sẵn rồi nên cổng 5432 đã bị chiểm. Xài tạm cổng khác.
+    ports:
+      - "5433:5432"
+
+    # Ánh xạ thư mục lưu dữ liệu của Postgres ra ổ cứng ảo (pgdata)
+    # Việc này đảm bảo dữ liệu không bị mất khi bạn tắt hoặc xóa container
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+# Khởi tạo ổ đĩa ảo tên là "pgdata" để phần volumes ở trên sử dụng
+volumes:
+  pgdata:
