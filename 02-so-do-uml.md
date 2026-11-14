@@ -20,7 +20,7 @@ rectangle HTTT07 {
   usecase "Nộp hoặc thay file báo cáo" as Submit
   usecase "Nhận xét và nhập điểm" as Grade
   usecase "Xem điểm đã công bố" as View
-  usecase "Tạo lớp, đợt và gán GVHD" as Setup
+  usecase "Tạo lớp và đợt" as Setup
   usecase "Đặt hạn nộp Tiểu luận\nvà mốc nộp Đồ án" as Deadlines
   usecase "Duyệt công bố điểm" as Publish
   usecase "Xem thống kê sinh viên đạt" as Stats
@@ -42,7 +42,7 @@ QL -- Stats
 @enduml
 ```
 
-Sinh viên tự đề xuất đề tài; không có chức năng chọn đề tài do giảng viên cung cấp trong bản đầu. Quản lý gán GVHD trước cho sinh viên Đồ án. Trưởng nhóm Tiểu luận thêm sinh viên cùng lớp bằng mã; chỉ trưởng nhóm gửi hồ sơ và nộp bài thay nhóm.
+Sinh viên tự đề xuất đề tài; không có chức năng chọn đề tài do giảng viên cung cấp trong bản đầu. Với Đồ án, sinh viên chọn giảng viên nhận đề xuất; khi giảng viên duyệt, hệ thống tự ghi nhận phân công GVHD. Trưởng nhóm Tiểu luận thêm sinh viên cùng lớp bằng mã; chỉ trưởng nhóm gửi hồ sơ và nộp bài thay nhóm.
 
 ## 2. Sơ đồ Lớp nghiệp vụ
 
@@ -68,6 +68,7 @@ class NhomTieuLuan {
 }
 class HoSoDangKy {
   +tenDeTai: str
+  +giangVienDeXuatId: int
   +trangThai: str
   +gui()
   +duyet()
@@ -108,7 +109,7 @@ DichVuDuyetDeTai ..> HoSoDangKy
 @enduml
 ```
 
-Hồ sơ Tiểu luận gắn lớp, có thể gắn nhóm; hồ sơ Đồ án gắn đợt và phân công GVHD. Tiểu luận lấy hạn từ lớp, Đồ án lấy hạn từ mốc do GVHD của phân công đó đặt. `BaiNop` giữ đường dẫn nội bộ; file thật lưu ở `BE/storage/reports/` và chỉ tải qua API có kiểm tra quyền. `KetQua` ứng với **một sinh viên trong một hồ sơ**; điểm chung ghi cùng giá trị cho các thành viên, điểm riêng ghi từng giá trị. Quản lý chỉ công bố khi hồ sơ đã đủ điểm.
+Hồ sơ Tiểu luận gắn lớp, có thể gắn nhóm; hồ sơ Đồ án gắn đợt và giảng viên được chọn. Khi giảng viên duyệt, hồ sơ mới gắn phân công GVHD. Tiểu luận lấy hạn từ lớp, Đồ án lấy hạn từ mốc do GVHD của phân công đó đặt. `BaiNop` giữ đường dẫn nội bộ; file thật lưu ở `BE/storage/reports/` và chỉ tải qua API có kiểm tra quyền. `KetQua` ứng với **một sinh viên trong một hồ sơ**; điểm chung ghi cùng giá trị cho các thành viên, điểm riêng ghi từng giá trị. Quản lý chỉ công bố khi hồ sơ đã đủ điểm.
 
 ## 3. Sơ đồ Tuần tự duyệt đề tài
 
@@ -152,27 +153,27 @@ actor "Sinh viên" as SV
 participant "React" as FE
 participant "FastAPI" as API
 database "PostgreSQL" as DB
-actor "GVHD được gán" as GV
-SV -> FE: Chọn đợt, nhập tên và mô tả đề tài
-FE -> API: Gửi hồ sơ Đồ án
-API -> DB: Đọc đợt và phân công GVHD của SV
-DB --> API: Phân công, hạn đăng ký
-alt Đúng phân công và còn hạn
-  API -> DB: Lưu CHO_DUYET gắn phân công
+actor "Giảng viên được chọn" as GV
+SV -> FE: Chọn đợt, giảng viên, nhập tên và mô tả đề tài
+FE -> API: Gửi hồ sơ đề xuất Đồ án
+API -> DB: Kiểm tra đợt, hạn và hồ sơ đang xử lý của SV
+DB --> API: Dữ liệu kiểm tra
+alt Còn hạn và chưa có hồ sơ đang xử lý
+  API -> DB: Lưu CHO_DUYET gắn giảng viên được chọn
   API --> FE: Mã hồ sơ
 else Không hợp lệ
   API --> FE: Lý do từ chối thao tác
 end
-GV -> FE: Mở hồ sơ được phân công
+GV -> FE: Mở hồ sơ gửi đến mình
 FE -> API: Gửi quyết định và nhận xét
-API -> DB: Kiểm tra GVHD, trạng thái hồ sơ
-alt Duyệt
-  API -> DB: Ghi DA_DUYET
+API -> DB: Kiểm tra đúng giảng viên được chọn, trạng thái hồ sơ và sinh viên chưa có GVHD
+alt Đồng ý hướng dẫn và duyệt đề tài
+  API -> DB: Tạo phân công GVHD, gắn hồ sơ và ghi DA_DUYET trong một giao dịch
 else Từ chối
   API -> DB: Ghi TU_CHOI và lý do
 end
 API --> FE: Trạng thái mới
-note over SV,FE: Nếu bị từ chối: trong hạn, sửa hồ sơ cũ\nhoặc tạo hồ sơ mới rồi gửi lại.
+note over SV,FE: Nếu bị từ chối: trong hạn, sửa hồ sơ cũ\nhoặc tạo hồ sơ mới và có thể chọn giảng viên khác.
 @enduml
 ```
 
@@ -212,14 +213,14 @@ stop
 ```plantuml
 @startuml
 start
-:Quản lý tạo đợt và gán GVHD;
-:GVHD đặt các mốc nộp cho sinh viên được phân công;
-:Sinh viên tự đề xuất đề tài và gửi GVHD được gán;
-if (GVHD duyệt?) then (Có)
-  :Hồ sơ DA_DUYET;
+:Quản lý tạo đợt;
+:Sinh viên chọn giảng viên và gửi đề xuất đề tài;
+if (Giảng viên đồng ý?) then (Có)
+  :Tự tạo phân công GVHD và duyệt hồ sơ;
+  :GVHD đặt các mốc nộp cho sinh viên;
 else (Không)
   :Ghi lý do TU_CHOI;
-  :Trong hạn, sửa hồ sơ cũ hoặc tạo mới;
+  :Trong hạn, sửa hồ sơ cũ hoặc tạo mới và có thể chọn giảng viên khác;
   stop
 endif
 :Sinh viên nộp hoặc thay file theo mốc;

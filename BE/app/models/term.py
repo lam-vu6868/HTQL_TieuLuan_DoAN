@@ -1,6 +1,6 @@
-"""Đợt Đồ án và phân công GVHD trước khi sinh viên đăng ký.
+"""Đợt Đồ án và phân công GVHD khi giảng viên duyệt đề xuất.
 
-1. Tạo DotDoAn với mã đợt và thời gian đăng ký; ngưỡng đạt Đồ án lưu theo hồ sơ.
-2. Tạo PhanCongHuongDan(dot_id, sinh_vien_id, giang_vien_id), duy nhất theo (dot_id, sinh_vien_id).
+1. Tạo DotDoAn với mã/tên đợt, học kỳ, năm học và thời gian đăng ký; ngưỡng đạt Đồ án lưu theo hồ sơ.
+2. Tạo PhanCongHuongDan(dot_id, sinh_vien_id, giang_vien_id) khi duyệt hồ sơ, duy nhất theo (dot_id, sinh_vien_id).
 3. Hồ sơ Đồ án tham chiếu phân công; không tạo bảng đề tài gợi ý trong bản đầu.
 """

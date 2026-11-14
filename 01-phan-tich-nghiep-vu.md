@@ -9,7 +9,7 @@ Nhóm hai người triển khai luồng **đăng ký đề tài → giảng viê
 | Quy trình | Người đăng ký | Người duyệt và chấm |
 | --- | --- | --- |
 | Tiểu luận | Sinh viên cá nhân hoặc trưởng nhóm trong lớp học phần | Giảng viên phụ trách lớp |
-| Đồ án tốt nghiệp | Một sinh viên trong đợt đồ án | GVHD do Quản lý gán trước |
+| Đồ án tốt nghiệp | Một sinh viên trong đợt đồ án | Giảng viên sinh viên chọn để gửi đề xuất; khi đồng ý sẽ là GVHD |
 
 ## 2. Vai trò
 
@@ -17,14 +17,14 @@ Nhóm hai người triển khai luồng **đăng ký đề tài → giảng viê
 | --- | --- |
 | Sinh viên | Xem lớp/đợt của mình, tự đề xuất đề tài, xem hồ sơ và nhận xét, nộp bài cá nhân, xem điểm đã công bố. |
 | Nhóm trưởng | Tạo nhóm Tiểu luận, tìm sinh viên bằng mã trong cùng lớp rồi thêm vào nhóm, chuyển quyền trưởng nhóm cho thành viên, gửi hồ sơ và nộp bài cho nhóm. |
-| Giảng viên | Duyệt/từ chối hồ sơ thuộc lớp mình hoặc được gán hướng dẫn; nhận xét, nhập điểm và xem thống kê trong phạm vi được phân công. Giảng viên lớp đặt hạn nộp Tiểu luận; GVHD đặt mốc nộp Đồ án cho sinh viên mình hướng dẫn. |
-| Quản lý | Cấp tài khoản, tạo môn/lớp/đợt, xếp sinh viên vào lớp, gán giảng viên phụ trách và GVHD, duyệt công bố điểm. |
+| Giảng viên | Duyệt/từ chối hồ sơ Tiểu luận thuộc lớp mình hoặc đề xuất Đồ án gửi đến mình; nhận xét, nhập điểm và xem thống kê trong phạm vi được phân công. Giảng viên lớp đặt hạn nộp Tiểu luận; GVHD đã đồng ý hướng dẫn đặt mốc nộp Đồ án. |
+| Quản lý | Cấp tài khoản, tạo môn/lớp/đợt, xếp sinh viên vào lớp, gán giảng viên phụ trách, duyệt công bố điểm. |
 
 Nhóm trưởng là quyền của sinh viên trong một nhóm, không phải vai trò tài khoản riêng. Mọi API kiểm tra vai trò và quan hệ với lớp, nhóm hoặc đợt. Thành viên thường xem hồ sơ và bài nộp nhóm, nhưng chỉ xem điểm đã công bố của chính mình; chỉ trưởng nhóm hiện tại được gửi hồ sơ, nộp bài và chuyển quyền.
 
 ## 3. Tài khoản và phân công
 
-Quản lý tạo tài khoản và hồ sơ sinh viên/giảng viên trước. Người dùng đăng nhập, Backend xác thực JWT. Quản lý tạo lớp học phần, gán giảng viên phụ trách, xếp sinh viên vào lớp. Với Đồ án, Quản lý tạo đợt và gán trước một GVHD cho từng sinh viên trong đợt. Chỉ GVHD đã được gán mới xét duyệt và chấm hồ sơ của sinh viên đó. Tên đăng nhập là email. Sinh viên có thể yêu cầu email đặt lại mật khẩu; liên kết chỉ dùng một lần và hết hạn.
+Quản lý tạo tài khoản và hồ sơ sinh viên/giảng viên trước. Người dùng đăng nhập, Backend xác thực JWT. Quản lý tạo lớp học phần, gán giảng viên phụ trách, xếp sinh viên vào lớp. Với Đồ án, Quản lý tạo đợt; sinh viên chọn giảng viên rồi gửi hồ sơ đề xuất đề tài. Giảng viên đó duyệt hoặc từ chối. Khi duyệt, hệ thống tự ghi nhận giảng viên làm GVHD cho sinh viên trong đợt; chỉ GVHD này được đặt mốc, nhận xét và chấm bài. Tên đăng nhập là email. Sinh viên có thể yêu cầu email đặt lại mật khẩu; liên kết chỉ dùng một lần và hết hạn.
 
 ## 4. Tiểu luận
 
@@ -38,10 +38,11 @@ Tiểu luận chỉ có **một hạn nộp cố định**, không có chuỗi m
 
 ## 5. Đồ án tốt nghiệp
 
-1. Quản lý tạo đợt và gán GVHD cho từng sinh viên. GVHD thiết lập các mốc nộp cho sinh viên mình hướng dẫn; mốc cuối dùng để chấm điểm.
-2. Sinh viên tự nhập tên và mô tả đề tài rồi gửi hồ sơ đến GVHD đã được gán. GVHD duyệt hoặc từ chối kèm nhận xét; hồ sơ bị từ chối được sửa rồi gửi lại hoặc tạo mới trong hạn.
-3. Sinh viên nộp hoặc thay file theo mốc. GVHD nhận xét mốc trung gian và nhập điểm ở mốc cuối. Các thầy có thể thống nhất điểm bên ngoài hệ thống; trong bản đầu chỉ GVHD nhập điểm vào hệ thống.
-4. Quản lý duyệt công bố, sau đó sinh viên xem kết quả. Hồ sơ chưa được nhập điểm là **chưa chấm**, không tự động thành không đạt.
+1. Quản lý tạo đợt theo học kỳ, năm học và thời gian đăng ký. Sinh viên chọn đợt, chọn giảng viên, tự nhập tên và mô tả đề tài rồi gửi hồ sơ cho giảng viên đó trong hạn đăng ký.
+2. Giảng viên đồng ý thì duyệt đề tài và hệ thống tự tạo phân công GVHD cho sinh viên trong đợt. Nếu từ chối, giảng viên ghi lý do; sinh viên có thể sửa hồ sơ rồi gửi lại hoặc tạo hồ sơ mới, chọn giảng viên khác trong hạn. Chưa được duyệt thì chưa có GVHD chính thức.
+3. GVHD thiết lập các mốc nộp cho sinh viên mình hướng dẫn; mốc cuối dùng để chấm điểm.
+4. Sinh viên nộp hoặc thay file theo mốc. GVHD nhận xét mốc trung gian và nhập điểm ở mốc cuối. Các thầy có thể thống nhất điểm bên ngoài hệ thống; trong bản đầu chỉ GVHD nhập điểm vào hệ thống.
+5. Quản lý duyệt công bố, sau đó sinh viên xem kết quả. Hồ sơ chưa được nhập điểm là **chưa chấm**, không tự động thành không đạt.
 
 Hội đồng, thành viên hội đồng, lịch bảo vệ và điểm từng giám khảo **chưa được quản lý trong bản đầu**. Nếu giảng viên môn học yêu cầu khi nộp, nhóm cần đưa trở lại phạm vi.
 

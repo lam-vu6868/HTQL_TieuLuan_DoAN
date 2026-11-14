@@ -8,52 +8,69 @@ Thiết kế dự kiến **14 bảng** cho hai luồng. Hồ sơ tự lưu tên/
 | Đăng ký | 5 | `dot_do_an`, `phan_cong_huong_dan`, `nhom_tieu_luan`, `thanh_vien_nhom`, `ho_so_dang_ky` |
 | Nộp bài và kết quả | 3 | `moc_nop`, `bai_nop`, `ket_qua` |
 
-PK = khóa chính; FK = khóa ngoại; UQ = duy nhất; dấu `?` = có thể trống. Các sơ đồ ERD dưới đây dùng PlantUML.
+PK = khóa chính; FK = khóa ngoại; UQ = duy nhất; dấu `?` = có thể trống. Ba sơ đồ ERD PlantUML dưới đây vẽ đủ 14 bảng và các cột dự kiến tại mục chính của mỗi bảng. Tên đợt, học kỳ và năm học nằm trong `dot_do_an`; hồ sơ Đồ án lưu `dot_id` để biết sinh viên đăng ký vào đợt nào.
+
+Ví dụ: `dot_do_an` có `id = 7`, `ten_dot = 'Đồ án tốt nghiệp HK2 2026–2027'`, `hoc_ky = 2`, `nam_hoc = '2026–2027'`; hồ sơ của sinh viên tham gia đợt đó lưu `ho_so_dang_ky.dot_id = 7`. Khi giảng viên duyệt, `phan_cong_huong_dan.dot_id` cũng bằng `7`.
+
+Ba sơ đồ bên dưới chia theo nghiệp vụ. Bảng ghi `(mục 1)` hoặc `(mục 2)` chỉ là tham chiếu tới bảng đã vẽ đầy đủ ở mục đó; trong hình này chỉ lặp khóa để thể hiện quan hệ. Mỗi cột FK đều có đường nối; điều kiện liên quan nhiều bảng được mô tả ở mục 4.
 
 ## 1. Tài khoản và lớp — 6 bảng
 
 ```plantuml
 @startuml
 title Tài khoản và lớp
+hide circle
 entity tai_khoan {
   * id : bigint <<PK>>
   --
   * ten_dang_nhap : text <<UQ>>
   * mat_khau_bam : text
   * vai_tro : text
+  reset_token_hash? : text
+  reset_expires_at? : timestamptz
 }
 entity sinh_vien {
   * id : bigint <<PK>>
   * tai_khoan_id : bigint <<FK, UQ>>
   * ma_sinh_vien : text <<UQ>>
+  * ho_ten : text
 }
 entity giang_vien {
   * id : bigint <<PK>>
   * tai_khoan_id : bigint <<FK, UQ>>
   * ma_giang_vien : text <<UQ>>
+  * ho_ten : text
 }
 entity mon_hoc {
   * id : bigint <<PK>>
   * ma_mon : text <<UQ>>
+  * ten_mon : text
 }
 entity lop_hoc_phan {
   * id : bigint <<PK>>
   * mon_hoc_id : bigint <<FK>>
   * giang_vien_id : bigint <<FK>>
   * ma_lop : text
-  * han_nop : timestamptz
+  * hoc_ky : int
+  * nam_hoc : text
+  bat_dau_dang_ky? : timestamptz
+  han_dang_ky? : timestamptz
+  han_nop? : timestamptz
+  * so_thanh_vien_toi_thieu : int
+  * so_thanh_vien_toi_da : int
   * che_do_cham : text
+  * nguong_dat : numeric(4,2)
 }
 entity sinh_vien_lop {
   * lop_id : bigint <<PK, FK>>
   * sinh_vien_id : bigint <<PK, FK>>
 }
-tai_khoan ||--o| sinh_vien
-tai_khoan ||--o| giang_vien
-mon_hoc ||--o{ lop_hoc_phan
-giang_vien ||--o{ lop_hoc_phan
-lop_hoc_phan ||--o{ sinh_vien_lop
-sinh_vien ||--o{ sinh_vien_lop
+tai_khoan ||--o| sinh_vien : tai_khoan_id
+tai_khoan ||--o| giang_vien : tai_khoan_id
+mon_hoc ||--o{ lop_hoc_phan : mon_hoc_id
+giang_vien ||--o{ lop_hoc_phan : giang_vien_id
+lop_hoc_phan ||--o{ sinh_vien_lop : lop_id
+sinh_vien ||--o{ sinh_vien_lop : sinh_vien_id
 @enduml
 ```
 
@@ -69,13 +86,15 @@ sinh_vien ||--o{ sinh_vien_lop
 
 ```plantuml
 @startuml
-title Nhóm, phân công và hồ sơ
-entity lop_hoc_phan
-entity sinh_vien
-entity giang_vien
+title Đăng ký đề tài và phân công GVHD
+hide circle
 entity dot_do_an {
   * id : bigint <<PK>>
   * ma_dot : text <<UQ>>
+  * ten_dot : text
+  * hoc_ky : int
+  * nam_hoc : text
+  * bat_dau_dang_ky : timestamptz
   * han_dang_ky : timestamptz
 }
 entity phan_cong_huong_dan {
@@ -87,44 +106,71 @@ entity phan_cong_huong_dan {
 entity nhom_tieu_luan {
   * id : bigint <<PK>>
   * lop_id : bigint <<FK>>
+  * ten_nhom : text
 }
 entity thanh_vien_nhom {
   * nhom_id : bigint <<PK, FK>>
   * sinh_vien_id : bigint <<PK, FK>>
+  * lop_id : bigint <<FK>>
   * la_truong_nhom : bool
 }
 entity ho_so_dang_ky {
   * id : bigint <<PK>>
   * loai : text
   * ten_de_tai : text
+  * mo_ta : text
+  * sinh_vien_gui_id : bigint <<FK>>
   * trang_thai : text
-  lop_id : bigint <<FK>>
-  dot_id : bigint <<FK>>
-  nhom_id : bigint <<FK>>
-  phan_cong_id : bigint <<FK>>
+  lop_id? : bigint <<FK>>
+  dot_id? : bigint <<FK>>
+  nhom_id? : bigint <<FK>>
+  giang_vien_de_xuat_id? : bigint <<FK>>
+  phan_cong_id? : bigint <<FK>>
+  nguong_dat? : numeric(4,2)
+  * lan_gui : int
+  gui_luc? : timestamptz
+  nguoi_duyet_id? : bigint <<FK>>
+  duyet_luc? : timestamptz
+  ly_do_tu_choi? : text
 }
-dot_do_an ||--o{ phan_cong_huong_dan
-sinh_vien ||--o{ phan_cong_huong_dan
-giang_vien ||--o{ phan_cong_huong_dan
-lop_hoc_phan ||--o{ nhom_tieu_luan
-nhom_tieu_luan ||--o{ thanh_vien_nhom
-sinh_vien ||--o{ thanh_vien_nhom
-lop_hoc_phan |o--o{ ho_so_dang_ky
-dot_do_an |o--o{ ho_so_dang_ky
-nhom_tieu_luan |o--o{ ho_so_dang_ky
-phan_cong_huong_dan |o--o{ ho_so_dang_ky
+entity "sinh_vien (mục 1)" as sinh_vien {
+  * id : bigint <<PK>>
+}
+entity "giang_vien (mục 1)" as giang_vien {
+  * id : bigint <<PK>>
+}
+entity "lop_hoc_phan (mục 1)" as lop_hoc_phan {
+  * id : bigint <<PK>>
+}
+entity "sinh_vien_lop (mục 1)" as sinh_vien_lop {
+  * lop_id : bigint <<PK>>
+  * sinh_vien_id : bigint <<PK>>
+}
+dot_do_an ||--o{ phan_cong_huong_dan : dot_id
+sinh_vien ||--o{ phan_cong_huong_dan : sinh_vien_id
+giang_vien ||--o{ phan_cong_huong_dan : giang_vien_id
+lop_hoc_phan ||--o{ nhom_tieu_luan : lop_id
+nhom_tieu_luan ||--o{ thanh_vien_nhom : (nhom_id, lop_id)
+sinh_vien_lop ||--o{ thanh_vien_nhom : (lop_id, sinh_vien_id)
+lop_hoc_phan |o--o{ ho_so_dang_ky : lop_id
+dot_do_an |o--o{ ho_so_dang_ky : dot_id
+nhom_tieu_luan |o--o{ ho_so_dang_ky : nhom_id
+giang_vien |o--o{ ho_so_dang_ky : giang_vien_de_xuat_id
+phan_cong_huong_dan |o--o{ ho_so_dang_ky : phan_cong_id
+sinh_vien ||--o{ ho_so_dang_ky : sinh_vien_gui_id
+giang_vien |o--o{ ho_so_dang_ky : nguoi_duyet_id
 @enduml
 ```
 
 | Bảng | Cột chính và quy tắc |
 | --- | --- |
-| `dot_do_an` | `id`, `ma_dot`, `ten_dot`, `bat_dau_dang_ky`, `han_dang_ky`. Ngưỡng đạt của Đồ án lưu theo từng hồ sơ. |
-| `phan_cong_huong_dan` | `id`, `dot_id`, `sinh_vien_id`, `giang_vien_id`; UQ `(dot_id, sinh_vien_id)`. Quản lý gán trước khi sinh viên đăng ký. Hồ sơ Đồ án tham chiếu phân công này, không cho sinh viên tự chọn GVHD. |
-| `nhom_tieu_luan` | `id`, `lop_id`, `ten_nhom`. Nhóm thuộc một lớp. |
+| `dot_do_an` | `id`, `ma_dot` duy nhất, `ten_dot`, `hoc_ky`, `nam_hoc`, `bat_dau_dang_ky`, `han_dang_ky`. Một dòng là một đợt; ngưỡng đạt của Đồ án lưu theo từng hồ sơ. |
+| `phan_cong_huong_dan` | `id`, `dot_id`, `sinh_vien_id`, `giang_vien_id`; UQ `(dot_id, sinh_vien_id)`. Hệ thống tạo khi giảng viên được sinh viên chọn đồng ý duyệt đề xuất Đồ án; mỗi sinh viên có tối đa một GVHD trong đợt. |
+| `nhom_tieu_luan` | `id`, `lop_id`, `ten_nhom`. Nhóm thuộc một lớp; thêm UQ `(id, lop_id)` để FK ghép của `thanh_vien_nhom` tham chiếu được. |
 | `thanh_vien_nhom` | PK `(nhom_id, sinh_vien_id)`, thêm `lop_id`, `la_truong_nhom`. Không có trạng thái lời mời; trưởng nhóm thêm sinh viên cùng lớp bằng mã. UQ `(lop_id, sinh_vien_id)` chặn ở hai nhóm trong một lớp. |
-| `ho_so_dang_ky` | `id`, `loai`, `ten_de_tai`, `mo_ta`, `sinh_vien_gui_id`, `lop_id?`, `dot_id?`, `nhom_id?`, `phan_cong_id?`, `nguong_dat?`, `trang_thai`, `lan_gui`, `gui_luc?`, `nguoi_duyet_id?`, `duyet_luc?`, `ly_do_tu_choi?`. Đề tài tự đề xuất nằm trong hồ sơ; `nguong_dat` chỉ dùng cho Đồ án, mặc định 4,0 và GVHD được chỉnh trước khi công bố. |
+| `ho_so_dang_ky` | `id`, `loai`, `ten_de_tai`, `mo_ta`, `sinh_vien_gui_id`, `lop_id?`, `dot_id?`, `nhom_id?`, `giang_vien_de_xuat_id?`, `phan_cong_id?`, `nguong_dat?`, `trang_thai`, `lan_gui`, `gui_luc?`, `nguoi_duyet_id?`, `duyet_luc?`, `ly_do_tu_choi?`. Sinh viên chọn `giang_vien_de_xuat_id` cho Đồ án; `phan_cong_id` chỉ có sau khi giảng viên đồng ý. `nguong_dat` chỉ dùng cho Đồ án, mặc định 4,0 và GVHD được chỉnh trước khi công bố. |
 
-Hồ sơ Tiểu luận có `lop_id` và tùy chọn `nhom_id`; hồ sơ Đồ án có `dot_id`, `phan_cong_id`, không có `lop_id` hay `nhom_id`. `phan_cong_id` phải khớp cùng đợt và sinh viên gửi hồ sơ. Tiểu luận lấy người duyệt từ lớp; Đồ án lấy từ phân công GVHD.
+Hồ sơ Tiểu luận có `lop_id` và tùy chọn `nhom_id`; hồ sơ Đồ án có `dot_id`, `giang_vien_de_xuat_id`, không có `lop_id` hay `nhom_id`. Khi `CHO_DUYET` hoặc `TU_CHOI`, `phan_cong_id` còn trống; khi `DA_DUYET`, hệ thống tạo phân công rồi gắn vào hồ sơ trong cùng giao dịch. Phân công phải khớp đợt, sinh viên gửi và giảng viên đã đồng ý. Tiểu luận lấy người duyệt từ lớp; Đồ án lấy từ `giang_vien_de_xuat_id`.
 
 Trạng thái: `NHAP → CHO_DUYET → DA_DUYET` hoặc `TU_CHOI`. Trong hạn đăng ký, hồ sơ `TU_CHOI` được sửa rồi gửi lại (tăng `lan_gui`, giữ cùng `id`) hoặc người dùng tạo hồ sơ mới; hồ sơ cũ được giữ. Chỉ một hồ sơ `CHO_DUYET`/`DA_DUYET` cho mỗi người hoặc nhóm trong cùng phạm vi.
 
@@ -132,35 +178,63 @@ Trạng thái: `NHAP → CHO_DUYET → DA_DUYET` hoặc `TU_CHOI`. Trong hạn �
 
 ```plantuml
 @startuml
-title Mốc nộp Đồ án, bài nộp và điểm từng sinh viên
-entity dot_do_an
-entity phan_cong_huong_dan
-entity sinh_vien
-entity ho_so_dang_ky
+title Nộp bài và kết quả
+hide circle
 entity moc_nop {
   * id : bigint <<PK>>
   * phan_cong_id : bigint <<FK>>
+  * ten_moc : text
+  * thu_tu : int
   * han_nop : timestamptz
   * la_moc_cuoi : bool
 }
 entity bai_nop {
   * id : bigint <<PK>>
   * ho_so_id : bigint <<FK>>
-  moc_nop_id : bigint <<FK>>
+  moc_nop_id? : bigint <<FK>>
+  * nguoi_nop_id : bigint <<FK>>
+  * duong_dan_tep : text
+  * ten_tep_goc : text
   * nop_luc : timestamptz
   * nop_tre : bool
+  nhan_xet? : text
+  nguoi_nhan_xet_id? : bigint <<FK>>
+  nhan_xet_luc? : timestamptz
 }
 entity ket_qua {
   * ho_so_id : bigint <<PK, FK>>
   * sinh_vien_id : bigint <<PK, FK>>
   * diem : numeric(4,2)
+  * nguoi_nhap_id : bigint <<FK>>
+  * nhap_luc : timestamptz
   * trang_thai_cong_bo : text
+  nguoi_cong_bo_id? : bigint <<FK>>
+  cong_bo_luc? : timestamptz
 }
-phan_cong_huong_dan ||--o{ moc_nop
-ho_so_dang_ky ||--o{ bai_nop
-moc_nop |o--o{ bai_nop
-ho_so_dang_ky ||--o{ ket_qua
-sinh_vien ||--o{ ket_qua
+entity "phan_cong_huong_dan (mục 2)" as phan_cong_huong_dan {
+  * id : bigint <<PK>>
+}
+entity "ho_so_dang_ky (mục 2)" as ho_so_dang_ky {
+  * id : bigint <<PK>>
+}
+entity "sinh_vien (mục 1)" as sinh_vien {
+  * id : bigint <<PK>>
+}
+entity "giang_vien (mục 1)" as giang_vien {
+  * id : bigint <<PK>>
+}
+entity "tai_khoan (mục 1)" as tai_khoan {
+  * id : bigint <<PK>>
+}
+phan_cong_huong_dan ||--o{ moc_nop : phan_cong_id
+ho_so_dang_ky ||--o{ bai_nop : ho_so_id
+moc_nop |o--o{ bai_nop : moc_nop_id
+sinh_vien ||--o{ bai_nop : nguoi_nop_id
+giang_vien |o--o{ bai_nop : nguoi_nhan_xet_id
+ho_so_dang_ky ||--o{ ket_qua : ho_so_id
+sinh_vien ||--o{ ket_qua : sinh_vien_id
+giang_vien ||--o{ ket_qua : nguoi_nhap_id
+tai_khoan |o--o{ ket_qua : nguoi_cong_bo_id
 @enduml
 ```
 
@@ -178,9 +252,9 @@ File báo cáo thật nằm ở `BE/storage/reports/`, không lưu dưới dạn
 | --- | --- |
 | Thành viên đúng lớp và nhóm | FK ghép `(lop_id, sinh_vien_id)` tới `sinh_vien_lop`, FK ghép `(nhom_id, lop_id)` tới nhóm. UQ `(lop_id, sinh_vien_id)` ở bảng thành viên. Chỉ mục duy nhất có điều kiện chặn hai trưởng nhóm; service đảm bảo nhóm có một trưởng nhóm. Chuyển trưởng nhóm trong một giao dịch. |
 | Giới hạn nhóm và hồ sơ | Service khóa nhóm/lớp khi thêm thành viên hoặc gửi hồ sơ; kiểm tra sĩ số, quyền trưởng nhóm và hồ sơ cá nhân/nhóm xung đột. Không sửa thành viên sau khi gửi hồ sơ. |
-| Phân công GVHD | UQ `(dot_id, sinh_vien_id)`; service kiểm tra `phan_cong_id` đúng đợt, sinh viên và giảng viên xét duyệt. |
+| Phân công GVHD | UQ `(dot_id, sinh_vien_id)`; chỉ giảng viên được chọn xét hồ sơ Đồ án. Khi duyệt, service tạo phân công đúng đợt/sinh viên/giảng viên và gắn hồ sơ trong một giao dịch; nếu sinh viên đã có GVHD thì chặn. |
 | Mốc Đồ án | UQ `(phan_cong_id, thu_tu)` và chỉ mục duy nhất có điều kiện trên `phan_cong_id` khi `la_moc_cuoi = true`; service chỉ cho GVHD của phân công đặt mốc và yêu cầu đúng một mốc cuối trước khi sinh viên nộp. |
-| Hồ sơ đang xử lý | Chỉ mục duy nhất có điều kiện cho `CHO_DUYET`, `DA_DUYET` theo lớp/nhóm hoặc đợt/sinh viên. Hồ sơ `TU_CHOI` không chiếm suất. |
+| Hồ sơ đang xử lý | Chỉ mục duy nhất có điều kiện cho `CHO_DUYET`, `DA_DUYET` theo lớp/nhóm hoặc đợt/sinh viên. Hồ sơ `TU_CHOI` không chiếm suất; sinh viên Đồ án có thể gửi lại cho giảng viên khác khi chưa có GVHD. |
 | Bài nộp hiện hành | UQ có điều kiện trên `ho_so_id` khi `moc_nop_id IS NULL` cho Tiểu luận; UQ `(ho_so_id, moc_nop_id)` khi mốc có giá trị cho Đồ án. Khi thay file, cập nhật `nop_luc`, `nop_tre`; nộp trễ vẫn nhận. |
 | Điểm và công bố | CHECK `0 <= diem <= 10`. Điểm chung: service ghi cùng điểm vào từng dòng `ket_qua` của thành viên; điểm riêng: ghi từng dòng theo điểm giảng viên nhập. Đổi `che_do_cham` sau khi đã chấm phải bị chặn. Chỉ công bố khi mọi thành viên hồ sơ có điểm; công bố cả nhóm trong một giao dịch. |
 

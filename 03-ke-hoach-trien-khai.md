@@ -6,24 +6,24 @@ Nhóm hai người làm luồng chạy được trước: **đăng ký → duy�
 
 - [ ] Tạo ứng dụng React, FastAPI async, PostgreSQL local; cấu hình `DATABASE_URL` và JWT qua `.env`.
 - [ ] Viết model của 14 bảng và migration Alembic. Kiểm tra `AsyncSession` đọc được dữ liệu; Alembic dùng `AsyncEngine` với `run_sync()`.
-- [ ] Tạo dữ liệu demo: tài khoản Quản lý/Giảng viên/Sinh viên, lớp, đợt, phân công GVHD.
+- [ ] Tạo dữ liệu demo: tài khoản Quản lý/Giảng viên/Sinh viên, lớp và đợt; phân công GVHD được tạo khi giảng viên duyệt đề xuất Đồ án.
 
 **Đạt khi:** migration chạy trên CSDL trống và một trang React đọc được API kết nối PostgreSQL.
 
 ## Chặng 2 — Đăng nhập, lớp và phân công
 
-- [ ] Quản lý cấp tài khoản, tạo môn/lớp/đợt, gán giảng viên lớp, xếp sinh viên vào lớp và gán GVHD theo sinh viên/đợt.
+- [ ] Quản lý cấp tài khoản, tạo môn/lớp/đợt (có học kỳ và năm học), gán giảng viên lớp và xếp sinh viên vào lớp.
 - [ ] Làm đăng nhập JWT và email đặt lại mật khẩu một lần, có hạn dùng; kiểm tra quyền theo vai trò và đối tượng. Sinh viên xem lớp/đợt của mình; giảng viên xem lớp và phân công của mình.
 
-**Đạt khi:** cả ba vai trò đăng nhập và chỉ xem được lớp, đợt hoặc phân công thuộc quyền của mình.
+**Đạt khi:** cả ba vai trò đăng nhập và chỉ xem được lớp hoặc đợt thuộc quyền của mình.
 
 ## Chặng 3 — Đăng ký và duyệt đề tài
 
 - [ ] Tiểu luận: cấu hình hạn đăng ký, hạn nộp, giới hạn nhóm và chế độ chấm `CHUNG`/`RIENG`; cho làm cá nhân hoặc tạo nhóm, thêm sinh viên cùng lớp bằng mã, chuyển trưởng nhóm.
-- [ ] Đồ án: Quản lý gán GVHD trước; sinh viên tự nhập tên/mô tả đề tài và gửi đúng GVHD. Không làm kho đề tài gợi ý.
-- [ ] Hai luồng: giảng viên duyệt hoặc từ chối kèm lý do; cho sửa hồ sơ cũ hoặc tạo hồ sơ mới trong hạn. Xem đề tài đã đăng ký để tự kiểm tra trùng, không ép tên duy nhất.
+- [ ] Đồ án: sinh viên chọn giảng viên, tự nhập tên/mô tả đề tài rồi gửi hồ sơ. Giảng viên đồng ý thì hệ thống tự tạo phân công GVHD cùng lúc duyệt đề tài. Không làm kho đề tài gợi ý.
+- [ ] Hai luồng: giảng viên duyệt hoặc từ chối kèm lý do; cho sửa hồ sơ cũ hoặc tạo hồ sơ mới trong hạn. Đồ án bị từ chối có thể chọn giảng viên khác khi gửi lại. Xem đề tài đã đăng ký để tự kiểm tra trùng, không ép tên duy nhất.
 
-**Đạt khi:** hồ sơ hai luồng đi từ gửi đến duyệt/từ chối; gửi sai quyền, quá hạn đăng ký, nhóm vượt sĩ số hoặc sai GVHD bị chặn; giảng viên khác lớp hoặc khác phân công GVHD không thể xét hồ sơ.
+**Đạt khi:** hồ sơ hai luồng đi từ gửi đến duyệt/từ chối; gửi sai quyền, quá hạn đăng ký hoặc nhóm vượt sĩ số bị chặn; chỉ giảng viên được chọn được xét đề xuất Đồ án, giảng viên khác lớp không được xét Tiểu luận; mỗi sinh viên chỉ có một hồ sơ Đồ án đang xử lý và một GVHD trong đợt.
 
 ## Chặng 4 — Nộp, chấm và công bố
 
@@ -43,4 +43,4 @@ Nhóm hai người làm luồng chạy được trước: **đăng ký → duy�
 
 ## Chưa làm trong bản đầu
 
-Kho đề tài gợi ý của giảng viên, quy trình mời/xác nhận nhóm, hội đồng và lịch bảo vệ trong hệ thống. Các thầy có thể thống nhất điểm Đồ án bên ngoài; GVHD được gán là người nhập điểm. Nếu giảng viên môn học xác nhận hội đồng/lịch là bắt buộc, phải bổ sung trước khi nộp.
+Kho đề tài gợi ý của giảng viên, quy trình mời/xác nhận nhóm, hội đồng và lịch bảo vệ trong hệ thống. Các thầy có thể thống nhất điểm Đồ án bên ngoài; GVHD đã đồng ý hướng dẫn là người nhập điểm. Nếu giảng viên môn học xác nhận hội đồng/lịch là bắt buộc, phải bổ sung trước khi nộp.

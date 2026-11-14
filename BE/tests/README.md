@@ -3,6 +3,7 @@
 Thư mục này sẽ chứa kiểm thử khi bắt đầu viết logic. Ưu tiên các ca có rủi ro nghiệp vụ:
 
 - Sinh viên ngoài lớp hoặc giảng viên không được phân công bị chặn.
+- Chỉ giảng viên sinh viên chọn được xét đề xuất Đồ án; duyệt tạo đúng một phân công GVHD, từ chối không tạo phân công.
 - Chỉ GVHD được phân công đặt mốc Đồ án cho sinh viên đó; bài nộp không dùng mốc của phân công khác.
 - Thêm thành viên phải cùng lớp, chưa thuộc nhóm khác; chỉ trưởng nhóm hiện tại được chuyển quyền.
 - Hồ sơ bị từ chối được sửa/gửi lại hoặc tạo mới; không có hai hồ sơ đang xử lý cùng phạm vi.
