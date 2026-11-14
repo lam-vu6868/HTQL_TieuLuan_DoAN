@@ -48,7 +48,7 @@ Nếu có bạn trong nhóm đang dùng tài liệu tiếng Việt, cần báo b
 
 Làm theo thứ tự, tick khi xong. Không đặt mốc thời gian; xem mục 8 để biết khi nào cắt.
 
-- [ ] **Bước 1. Khung dự án và DB.** Repo, FE/BE, `.env`, `.gitignore`. Chạy PostgreSQL bằng Docker Compose ngay từ đầu (chỉ service `db`, có volume), BE và FE vẫn chạy trực tiếp trên máy.
+- [x] **Bước 1. Khung dự án và DB.** Repo, FE/BE, `.env`, `.gitignore`. Chạy PostgreSQL bằng Docker Compose ngay từ đầu (chỉ service `db`, có volume), BE và FE vẫn chạy trực tiếp trên máy.
       _Xong khi:_ `docker compose up` lên DB và BE kết nối được.
 
 - [ ] **Bước 2. Model, ORM, tầng DAL theo OOP.** Model SQLAlchemy async với tên tiếng Anh, 4 đến 5 bảng, tạo bằng `create_all` (Alembic nếu còn thời gian). Viết lớp Repository và lớp Service, inject bằng `Depends`. Làm trọn một lớp mẫu `TopicRegistration` rồi lặp lại cho các lớp còn lại.
