@@ -11,5 +11,5 @@ Thư mục này sẽ chứa kiểm thử khi bắt đầu viết logic. Ưu tiê
 - Điểm CHUNG ghi cho cả nhóm, điểm RIENG ghi từng người; thiếu điểm là chưa chấm, Quản lý chỉ công bố khi đủ điểm.
 - Email đặt lại mật khẩu không tiết lộ tài khoản, token hết hạn và chỉ dùng một lần.
 
-Chưa có file test chạy được vì bộ khung chưa có logic để kiểm tra.
+`test_repositories.py` kiểm tra DAL trên PostgreSQL và rollback dữ liệu thử. Chạy từ thư mục `BE` bằng `venv\Scripts\python.exe -m unittest discover -s tests -v` sau khi Docker PostgreSQL đã khởi động.
 Khi thêm test API và service, dùng client/fixture hỗ trợ async và kiểm tra cả commit/rollback với AsyncSession.

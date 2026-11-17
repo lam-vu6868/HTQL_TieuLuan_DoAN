@@ -1,7 +1,21 @@
-"""Kết nối PostgreSQL bất đồng bộ và phiên giao dịch.
+"""Engine và session PostgreSQL bất đồng bộ."""
 
-1. Tạo Base chung cho ORM; dùng create_async_engine(Settings.DATABASE_URL).
-2. Tạo async_sessionmaker(..., expire_on_commit=False) cấp AsyncSession theo request.
-3. Viết async def get_db(): mở/đóng session bằng async with; không chia sẻ session giữa request.
-4. Service await commit()/rollback() cho thao tác nhiều bước; kiểm tra SELECT 1 bằng await session.execute().
-"""
+from collections.abc import AsyncIterator
+
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
+
+from app.config import get_settings
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+engine = create_async_engine(get_settings().database_url)
+SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
+
+
+async def get_db() -> AsyncIterator[AsyncSession]:
+    async with SessionLocal() as session:
+        yield session

@@ -1,0 +1,26 @@
+@startuml
+title Đồ án tốt nghiệp — Từ đề xuất đến kết quả
+skinparam defaultFontSize 18
+start
+:Quản lý tạo đợt;
+:Sinh viên chọn giảng viên,\nnhập đề tài và gửi hồ sơ;
+if (Giảng viên đồng ý?) then (Có)
+  :Hệ thống tạo phân công GVHD\nvà duyệt hồ sơ;
+  :GVHD đặt các mốc nộp;
+else (Không)
+  :Ghi TU_CHOI và lý do;
+  :Trong hạn đăng ký, sinh viên sửa\nhoặc tạo hồ sơ mới, có thể đổi giảng viên;
+  stop
+endif
+:Sinh viên nộp hoặc thay file\ntheo từng mốc;
+:Đánh dấu trễ nếu quá hạn;
+:GVHD nhận xét mốc trung gian\nvà nhập điểm ở mốc cuối;
+if (Đã có điểm?) then (Có)
+  :Quản lý duyệt công bố;
+  :Sinh viên xem điểm;
+else (Chưa)
+  :Giữ trạng thái chưa chấm;
+endif
+:Thống kê số sinh viên đạt\ntrong đợt;
+stop
+@enduml

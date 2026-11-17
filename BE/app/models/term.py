@@ -1,6 +1,28 @@
-"""Đợt Đồ án và phân công GVHD khi giảng viên duyệt đề xuất.
+"""Đợt Đồ án và phân công giảng viên hướng dẫn."""
 
-1. Tạo DotDoAn với mã/tên đợt, học kỳ, năm học và thời gian đăng ký; ngưỡng đạt Đồ án lưu theo hồ sơ.
-2. Tạo PhanCongHuongDan(dot_id, sinh_vien_id, giang_vien_id) khi duyệt hồ sơ, duy nhất theo (dot_id, sinh_vien_id).
-3. Hồ sơ Đồ án tham chiếu phân công; không tạo bảng đề tài gợi ý trong bản đầu.
-"""
+from sqlalchemy import BigInteger, DateTime, ForeignKey, Integer, Text, UniqueConstraint
+from sqlalchemy.orm import mapped_column
+
+from app.database import Base
+
+
+class DotDoAn(Base):
+    __tablename__ = "dot_do_an"
+
+    id = mapped_column(BigInteger, primary_key=True)
+    ma_dot = mapped_column(Text, unique=True, nullable=False)
+    ten_dot = mapped_column(Text, nullable=False)
+    hoc_ky = mapped_column(Integer, nullable=False)
+    nam_hoc = mapped_column(Text, nullable=False)
+    bat_dau_dang_ky = mapped_column(DateTime(timezone=True), nullable=False)
+    han_dang_ky = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class PhanCongHuongDan(Base):
+    __tablename__ = "phan_cong_huong_dan"
+    __table_args__ = (UniqueConstraint("dot_id", "sinh_vien_id"),)
+
+    id = mapped_column(BigInteger, primary_key=True)
+    dot_id = mapped_column(ForeignKey("dot_do_an.id"), nullable=False)
+    sinh_vien_id = mapped_column(ForeignKey("sinh_vien.id"), nullable=False)
+    giang_vien_id = mapped_column(ForeignKey("giang_vien.id"), nullable=False)

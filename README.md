@@ -43,8 +43,7 @@ File báo cáo được lưu trên máy chủ backend; PostgreSQL chỉ giữ th
 
 ```bash
 HTTT07/
-├── 📁 BE/                      # API, nghiệp vụ, truy cập dữ liệu, nơi lưu file báo cáo
-├── 📁 DB/                      # Migration PostgreSQL và dữ liệu demo
+├── 📁 BE/                      # API, nghiệp vụ, truy cập dữ liệu, migration Alembic, nơi lưu file báo cáo
 ├── 📁 Docs/                    # Tài liệu phân tích, thiết kế
 │   ├── 📁 presentation-plans/  #Kế hoạch cho các bài thuyết trình
 │   ├── 📝 01-phan-tich-nghiep-vu.md

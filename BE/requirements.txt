@@ -1,5 +1,5 @@
-# Thư viện Python dùng chung cho BE và công cụ migration trong DB.
-# Cài một lần theo lệnh trong BE/README.md; PostgreSQL server phải cài riêng.
+# Thư viện Python dùng chung cho BE và Alembic trong BE/alembic.
+# Cài một lần theo lệnh trong BE/README.md; PostgreSQL chạy bằng compose.yaml.
 
 # API FastAPI và máy chủ chạy ứng dụng.
 fastapi>=0.115,<1
