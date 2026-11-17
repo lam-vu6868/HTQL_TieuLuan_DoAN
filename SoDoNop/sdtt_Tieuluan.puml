@@ -1,0 +1,36 @@
+@startuml
+title Tiểu luận — Gửi và duyệt đề tài
+skinparam defaultFontSize 30
+actor "Sinh viên /\nTrưởng nhóm" as SV
+participant "Giao diện\nReact" as FE
+participant "API\nFastAPI" as API
+database "PostgreSQL" as DB
+actor "Giảng viên\nphụ trách lớp" as GV
+
+== Gửi hồ sơ ==
+SV -> FE: Nhập tên và mô tả đề tài
+FE -> API: Gửi hồ sơ Tiểu luận
+API -> DB: Kiểm tra lớp, hạn đăng ký,\nngười gửi và nhóm
+DB --> API: Kết quả kiểm tra
+alt Hợp lệ
+  API -> DB: Lưu hồ sơ CHO_DUYET
+  API --> FE: Mã hồ sơ
+else Không hợp lệ
+  API --> FE: Lý do không nhận hồ sơ
+end
+
+== Giảng viên duyệt ==
+GV -> FE: Mở hồ sơ chờ duyệt
+FE -> API: Gửi quyết định và nhận xét
+API -> DB: Kiểm tra giảng viên phụ trách\nvà trạng thái hồ sơ
+alt Duyệt
+  API -> DB: Cập nhật DA_DUYET
+else Từ chối
+  API -> DB: Cập nhật TU_CHOI và lý do
+end
+API --> FE: Trạng thái hồ sơ mới
+note over SV,FE
+  Nếu bị từ chối, trong hạn đăng ký
+  có thể sửa hồ sơ cũ hoặc tạo hồ sơ mới để gửi lại.
+end note
+@enduml

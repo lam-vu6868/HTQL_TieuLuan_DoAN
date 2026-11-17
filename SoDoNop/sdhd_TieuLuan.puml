@@ -1,0 +1,26 @@
+@startuml
+title Tiểu luận — Từ đề xuất đến kết quả
+skinparam defaultFontSize 18
+start
+:Quản lý tạo lớp và xếp sinh viên;
+:Giảng viên đặt hạn đăng ký, hạn nộp,\ngiới hạn nhóm và chế độ chấm;
+:Sinh viên làm cá nhân hoặc trưởng nhóm\nthêm thành viên cùng lớp;
+:Sinh viên hoặc trưởng nhóm\nđề xuất đề tài và gửi hồ sơ;
+if (Giảng viên duyệt?) then (Có)
+  :Hồ sơ DA_DUYET;
+else (Không)
+  :Ghi lý do TU_CHOI;
+  :Trong hạn đăng ký, sửa hồ sơ cũ\nhoặc tạo hồ sơ mới;
+  stop
+endif
+:Nộp hoặc thay file báo cáo,\nđánh dấu trễ nếu quá hạn;
+:Giảng viên nhận xét và nhập điểm\nchung hoặc riêng từng sinh viên;
+if (Đủ điểm cho mọi thành viên?) then (Có)
+  :Quản lý duyệt công bố;
+  :Mỗi sinh viên xem điểm của mình;
+else (Chưa)
+  :Giữ trạng thái chưa chấm\nvà chưa công bố;
+endif
+:Thống kê số sinh viên đạt;
+stop
+@enduml

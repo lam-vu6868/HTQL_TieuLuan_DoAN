@@ -1,7 +1,21 @@
-"""Cấu hình môi trường của BE.
+"""Cấu hình backend từ BE/.env."""
 
-1. Tạo lớp Settings chứa DATABASE_URL, JWT_SECRET và cấu hình SMTP/địa chỉ FE cho email đặt lại mật khẩu.
-2. Tạo get_settings() để các phần khác dùng cùng một cấu hình.
-3. URL postgresql+psycopg:// dùng với create_async_engine() sẽ chọn driver async.
-4. Đọc .env khi chạy local; kiểm tra giá trị bắt buộc và không ghi mật khẩu hoặc khóa thật vào mã nguồn.
-"""
+from functools import lru_cache
+from pathlib import Path
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    database_url: str
+    jwt_secret: str
+
+    model_config = SettingsConfigDict(
+        env_file=Path(__file__).resolve().parents[1] / ".env",
+        extra="ignore",
+    )
+
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()

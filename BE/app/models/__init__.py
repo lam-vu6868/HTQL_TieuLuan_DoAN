@@ -1,6 +1,6 @@
-"""Điểm tập hợp model của 14 bảng.
+"""Nạp toàn bộ 14 bảng vào metadata cho Alembic."""
 
-1. Nhập Base chung của ORM từ database.py.
-2. Nhập các module account, academic, term, registration, assessment.
-3. Để DB/migrations/env.py lấy Base.metadata sau khi toàn bộ bảng đã được nhập.
-"""
+from app.database import Base
+from app.models import account, academic, assessment, registration, term  # noqa: F401
+
+__all__ = ["Base"]

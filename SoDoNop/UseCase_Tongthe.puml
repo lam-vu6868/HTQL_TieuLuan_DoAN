@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+actor "Sinh viên" as SV
+actor "Nhóm trưởng" as NT
+actor "Giảng viên" as GV
+actor "Quản lý" as QL
+NT --|> SV
+rectangle HTTT07 {
+  usecase "Tạo nhóm, thêm thành viên\nvà chuyển trưởng nhóm" as Group
+  usecase "Đề xuất, sửa, gửi lại đề tài" as Register
+  usecase "Duyệt hoặc từ chối\nkèm nhận xét" as Review
+  usecase "Nộp hoặc thay file báo cáo" as Submit
+  usecase "Nhận xét và nhập điểm" as Grade
+  usecase "Xem điểm đã công bố" as View
+  usecase "Tạo lớp và đợt" as Setup
+  usecase "Đặt hạn nộp Tiểu luận\nvà mốc nộp Đồ án" as Deadlines
+  usecase "Duyệt công bố điểm" as Publish
+  usecase "Xem thống kê sinh viên đạt" as Stats
+}
+SV -- Register
+SV -- Submit
+SV -- View
+NT -- Group
+GV -- Review
+GV -- Grade
+GV -- Stats
+GV -- Deadlines
+QL -- Setup
+QL -- Publish
+QL -- Stats
+@enduml
