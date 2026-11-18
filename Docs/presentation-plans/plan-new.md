@@ -1,184 +1,169 @@
 # 🎯 Kế hoạch thuyết trình — Chủ đề 9: Async/Await & Tích hợp API
 
-> 💡 Chỉ làm **một lát cắt dọc** của đồ án, đủ chứa các ý thực hành của đề bài. Phần còn lại của kế hoạch full để sau. Lát cắt này chính là phần đầu của chặng 1 và 3 nên dùng lại được.
+> 💡 Phạm vi thu gọn: phần thực hành dừng ở **ORM → tầng DAL → tích hợp REST API (JSON serialize/deserialize)**, cộng với **demo UI bị treo** và **gọi API ngoài**. Chưa đụng nghiệp vụ, chưa có đăng nhập. Phần còn lại thuộc kế hoạch full (`03-ke-hoach-trien-khai.md`).
+> Cơ sở lý thuyết và thiết kế demo chi tiết: `suy_luan.md` (bản chốt của nhóm).
 
 ---
 
 ## 1. 📋 Đề bài và cách đáp ứng
 
-|  #  | Đề bài                                 | Đáp ứng bằng                                                   |
-| :-: | :------------------------------------- | :------------------------------------------------------------- |
-|  1  | Đa luồng và bất đồng bộ trong OOP      | Báo cáo nặng: bản đồng bộ so với bản async/tác vụ nền (bước 5) |
-|  2  | GUI bị "treo" và giải pháp async/await | React vẫn bấm được khi báo cáo chạy nền (bước 5, 7)            |
-|  3  | REST API, JSON serialize/deserialize   | Pydantic schema và widget `httpx` (bước 3, 6)                  |
-|  4  | Vẽ Use Case và Class thực tế           | UML của lát cắt (bước 2)                                       |
-|  5  | Tích hợp ORM vào tầng DAL              | SQLAlchemy async trong lớp Repository (bước 2)                 |
-|  6  | Báo cáo nặng dạng async để UI không đơ | Bước 5                                                         |
-|  7  | Gọi API ngoài (tỷ giá, thời tiết)      | Widget ở dashboard (bước 6)                                    |
-
-> ⚠️ **JWT và Docker** không nằm trong đề bài, nên chỉ làm mức đủ dùng.
+|  #  | Đề bài                                 | Đáp ứng bằng                                                                    |
+| :-: | :------------------------------------- | :------------------------------------------------------------------------------ |
+|  1  | Đa luồng và bất đồng bộ trong OOP      | Thí nghiệm async (bước 5) và tác vụ nặng sync so với `BackgroundTasks` (bước 7) |
+|  2  | GUI bị "treo" và giải pháp async/await | Demo 1 và Demo 2 trên React (bước 6, 7)                                         |
+|  3  | REST API, JSON serialize/deserialize   | Schema Pydantic `Read` cho các GET (bước 4), parse JSON API ngoài (bước 5)      |
+|  4  | Vẽ Use Case và Class thực tế           | Sơ đồ có sẵn của nhóm, đổi tên sang tiếng Anh (mục 5)                           |
+|  5  | Tích hợp ORM vào tầng DAL              | SQLAlchemy async + `BaseRepository` generic (bước 2, 3)                         |
+|  6  | Tác vụ nặng dạng async để UI không đơ  | Bước 7                                                                          |
+|  7  | Gọi API ngoài                          | Open-Meteo bằng `httpx.AsyncClient` (bước 5, 6)                                 |
 
 ---
 
-## 2. 🎬 Phạm vi lát cắt
+## 2. 🎬 Phạm vi
 
 ### ✅ Làm
 
-Đăng nhập đơn giản, lớp học phần, hồ sơ đăng ký đề tài (xem danh sách, gửi hồ sơ), báo cáo thống kê hồ sơ theo lớp.
+- Model ORM cho **đủ 14 bảng** của `04-thiet-ke-co-so-du-lieu.md`.
+- Tầng DAL cho tất cả bảng: một `BaseRepository` generic, mỗi bảng kế thừa.
+- Schema Pydantic `Read` và API **GET đơn giản** (danh sách có phân trang, xem theo id), không cần token.
+- API thời tiết (Open-Meteo) qua `httpx.AsyncClient`, có mock fallback.
+- Các endpoint phục vụ demo UI treo (`slow-1s/2s/3s`, tác vụ nặng).
+- React: trang demo.
 
-> 📌 **Danh sách trong lát cắt là hồ sơ đăng ký đề tài** (`topic_registrations`), **không phải** danh sách sinh viên. Sinh viên, giảng viên, môn học chỉ là dữ liệu nền (seed sẵn), không làm API riêng.
+### ❌ Không làm (để sau)
 
-### 🕒 Hoãn lại (thuộc kế hoạch full)
-
-| Chặng | Nội dung hoãn                                                        |
-| :---: | :------------------------------------------------------------------- |
-| **2** | Phân quyền chi tiết theo đối tượng, email đặt lại mật khẩu, gán GVHD |
-| **3** | Nhóm, chuyển trưởng nhóm, duyệt hoặc từ chối, sửa và gửi lại, đồ án  |
-| **4** | Nộp file, mốc nộp, chấm điểm, công bố, thống kê đạt                  |
-| **5** | Kiểm thử đầy đủ, README cho người khác chạy                          |
+| Hạng mục                                      | Ghi chú                                                               |
+| :-------------------------------------------- | :-------------------------------------------------------------------- |
+| Đăng nhập, JWT, phân quyền                    | Các GET demo để mở, không cần token                                   |
+| Nghiệp vụ (duyệt đề tài, nhóm, nộp bài, chấm) | Thuộc chặng 2 đến 4 của kế hoạch full                                 |
+| POST, PUT, DELETE                             | Chỉ GET, nên chưa cần schema `Create`                                 |
+| Lớp Service có nghiệp vụ                      | Nếu muốn đủ kiến trúc trong slide thì chỉ giữ lớp mỏng gọi Repository |
+| Sơ đồ vẽ mới                                  | Chỉ đổi tên sơ đồ có sẵn                                              |
 
 ---
 
-## 3. 🏷️ Quy ước đặt tên (chốt trước khi code)
+## 3. 🏷️ Quy ước đặt tên
 
-> 📏 Bảng `snake_case` số nhiều, lớp Python `PascalCase` số ít, giao diện vẫn hiển thị tiếng Việt. Áp dụng cho cả sơ đồ, CSDL và code, nếu không các phần sẽ lệch tên nhau.
+> 📏 Bảng `snake_case` số nhiều, lớp Python `PascalCase` số ít, cột `snake_case`, enum `UPPER_SNAKE_CASE`, giao diện vẫn hiển thị tiếng Việt.
 
-| 🇻🇳 Tiếng Việt                      | 🇬🇧 Tiếng Anh                      |
-| :--------------------------------- | :-------------------------------- |
-| `tai_khoan`                        | `accounts`                        |
-| `sinh_vien`, `giang_vien`          | `students`, `lecturers`           |
-| `mon_hoc`, `lop_hoc_phan`          | `courses`, `course_sections`      |
-| `ho_so_dang_ky`                    | `topic_registrations`             |
-| `nop_tre`                          | `is_late`                         |
-| `CHO_DUYET`, `DA_DUYET`, `TU_CHOI` | `PENDING`, `APPROVED`, `REJECTED` |
-
-> 💬 Nếu có bạn trong nhóm đang dùng tài liệu tiếng Việt, cần báo bảng đối chiếu này.
+Bảng đối chiếu đầy đủ cho **14 bảng, lớp Python, enum và cột hay gặp** nằm ở **mục 0 của `04-thiet-ke-co-so-du-lieu.md`**. Dùng đúng bảng đó cho sơ đồ, CSDL và code để các phần không lệch tên nhau. Có bạn trong nhóm đang dùng tài liệu tiếng Việt nên cần báo bảng đối chiếu này.
 
 ---
 
 ## 4. 🪜 Thứ tự thực hiện
 
-> 🧭 Làm theo thứ tự, tick khi xong. Không đặt mốc thời gian; xem mục 8 để biết khi nào cắt.
+> 🧭 Làm theo thứ tự, tick khi xong. Không đặt mốc thời gian; xem mục 8 để biết khi nào cắt. Làm đến đâu tạo đến đó, không tạo sẵn file hàng loạt.
 
 ### ✅ Bước 1 — Khung dự án và DB
 
-- [x] Repo, FE/BE, `.env`, `.gitignore`. Chạy PostgreSQL bằng Docker Compose ngay từ đầu (chỉ service `db`, có volume), BE và FE vẫn chạy trực tiếp trên máy.
-- 🎯 _Xong khi:_ `docker compose up` lên DB và BE kết nối được.
+- [x] Repo, FE/BE, `.env`, `.gitignore`. PostgreSQL chạy bằng Docker Compose (service `db`, có volume), BE và FE chạy trực tiếp trên máy.
+- [x] BE `/health` trả JSON báo kết nối DB thành công.
 
-### ⬜ Bước 2 — Model, ORM, tầng DAL theo OOP
+### ⬜ Bước 2 — Model ORM cho đủ 14 bảng
 
-- [ ] Model SQLAlchemy async với tên tiếng Anh, 4 đến 5 bảng, tạo bằng `create_all` (Alembic nếu còn thời gian).
-- [ ] Viết lớp Repository và lớp Service, inject bằng `Depends`.
-- [ ] Làm trọn một lớp mẫu `TopicRegistration` rồi lặp lại cho các lớp còn lại.
-- 🎯 _Xong khi:_ gọi được CRUD qua Service.
-- 🎨 _Song song:_ vẽ UML (mục 5).
+- [x] 5 bảng đầu: `accounts`, `students`, `lecturers`, `course_sections`, `topic_registrations`; `enums.py`; `database.py` (async engine/session).
+- [ ] Đối chiếu 5 model đã code với `04` mới (tên cột, tên enum); sai lệch thì sửa theo `04`.
+- [ ] 9 bảng còn lại: `courses`, `section_students`, `project_periods`, `supervisor_assignments`, `essay_groups`, `group_members`, `milestones`, `submissions`, `results`.
+- [ ] Setup Alembic, tạo migration đầu tiên, `upgrade head`. (Nếu vướng thì dùng `create_all`, Alembic làm sau.)
+- 🎯 _Xong khi:_ migration chạy ra đủ 14 bảng, kiểm tra được trong pgAdmin.
 
-### ⬜ Bước 3 — API của lát cắt và JWT tối thiểu
+### ⬜ Bước 3 — Tầng DAL theo OOP
 
-- [ ] `GET /api/registrations`: danh sách hồ sơ, trả mảng JSON.
-- [ ] `POST /api/registrations`: gửi hồ sơ mới, trả hồ sơ vừa tạo.
-- [ ] Pydantic schema tách hai lớp: `TopicRegistrationCreate` (dữ liệu vào) và `TopicRegistrationRead` (dữ liệu ra, `from_attributes=True`). Đây là chỗ minh họa JSON Deserialization và Serialization.
-- [ ] JWT bản tối thiểu (mục 7).
-- 🎯 _Xong khi:_ thử được trên Swagger, đăng nhập rồi gọi API có token.
+- [ ] `BaseRepository[T]` generic: `get_by_id`, `list` (có `limit/offset`), `count`, và các thao tác CRUD cơ bản.
+- [ ] Mỗi bảng một Repository kế thừa; chỉ thêm truy vấn riêng khi cần.
+- [ ] Inject Repository bằng `Depends`.
+- 🎯 _Xong khi:_ gọi được Repository của từng bảng và lấy dữ liệu đúng.
 
-### ⬜ Bước 4 — Thí nghiệm async nhỏ (học trước khi làm báo cáo)
+### ⬜ Bước 4 — Pydantic và API GET
 
-- [ ] Viết hai endpoint thử: một dùng `time.sleep`, một dùng `asyncio.sleep`, rồi gọi song song nhiều request để thấy server đứng hay không.
-- [ ] Đọc lý thuyết đúng lúc này: I/O-bound và CPU-bound, event loop làm gì khi gặp `await`, `BackgroundTasks`, `asyncio.to_thread`.
-- 🎯 _Xong khi:_ giải thích được vì sao có bản "async" mà server vẫn đơ.
+- [ ] Schema `Read` cho các bảng (`from_attributes=True`). Đây là chỗ minh họa **JSON Serialization**.
+- [ ] GET danh sách (có phân trang) và GET theo id cho các bảng chính; bảng phụ làm thêm nếu còn thời gian.
+- [ ] Seed ít dữ liệu theo thứ tự khóa ngoại (đủ để các danh sách GET không rỗng, có một bảng khoảng vài trăm đến vài nghìn dòng để thử phân trang).
+- 🎯 _Xong khi:_ thử được các GET trên Swagger.
 
-### ⬜ Bước 5 — Dữ liệu lớn và báo cáo nặng
+### ⬜ Bước 5 — Thí nghiệm async + API ngoài
 
-- [ ] Seed vài nghìn dòng hồ sơ (dùng `faker` hoặc vòng lặp random, không cần dữ liệu đẹp). Đo và tăng số dòng, hoặc thêm tính toán, cho tới khi báo cáo mất khoảng 3 đến 5 giây. Nếu vẫn chưa đủ chậm thì mới thêm bước chờ giả lập.
-- [ ] **Bản đồng bộ:** server xử lý xong mới trả; trong lúc đó các request khác (ví dụ `/health`) bị treo.
-- [ ] **Bản async/tác vụ nền:** trả ngay `202` kèm `job_id`, việc nặng chạy nền, có endpoint hỏi trạng thái (`PENDING`, `RUNNING`, `DONE`), xong thì tải kết quả. Dùng `BackgroundTasks` và dict trong bộ nhớ lưu trạng thái là đủ cho demo.
-- [ ] ⚠️ Lưu ý: `async def` chỉ giúp khi **chờ I/O**. Phần tính toán nặng chạy thẳng trong `async def` vẫn chặn event loop, cần đẩy sang thread hoặc tác vụ nền.
-- [ ] Ghi lại bảng thời gian đo được, dùng cho Word và slide.
-- 🎯 _Xong khi:_ demo thấy rõ khác biệt giữa hai bản.
+- [ ] Thí nghiệm nhỏ: endpoint dùng `time.sleep` và endpoint dùng `asyncio.sleep`; `async def` chứa code blocking và `def` thường; gọi song song nhiều request để thấy server đứng hay không. Đọc lý thuyết đúng lúc này (xem `suy_luan.md`, mục 2).
+- [ ] Endpoint `/api/demo/slow-1s`, `slow-2s`, `slow-3s` (dùng `asyncio.sleep`).
+- [ ] `httpx.AsyncClient` gọi Open-Meteo, Pydantic parse JSON (**JSON Deserialization**), endpoint trung gian cho FE, mock fallback khi mất mạng.
+- 🎯 _Xong khi:_ giải thích được vì sao có bản "async" mà server vẫn đơ, và gọi được endpoint thời tiết.
 
-### ⬜ Bước 6 — API ngoài
+### ⬜ Bước 6 — Giao diện React
 
-- [ ] `httpx.AsyncClient` gọi tỷ giá hoặc thời tiết, Pydantic parse JSON, endpoint trung gian cho FE.
-- 🎯 _Xong khi:_ widget hiển thị được dữ liệu.
+- [ ] **Demo 1:** 3 widget fetch độc lập (1s/2s/3s), trạng thái `loading → success/error`, nút "Mở modal" vẫn bấm được.
+- [ ] Widget thời tiết.
+- [ ] Trang demo 2 (khung): phần dưới là các tab gọi GET nhẹ ở bước 4; phần trên chừa chỗ cho nút tác vụ nặng.
+- 🎯 _Xong khi:_ chạy trọn Demo 1 và tab GET trên React.
 
-### ⬜ Bước 7 — Giao diện React
+### ⬜ Bước 7 — Tác vụ nặng ở BE (Demo 2) — làm sau cùng được
 
-- [ ] Đăng nhập, danh sách hồ sơ, nút xuất báo cáo (hiện trạng thái đang xử lý, hỏi trạng thái định kỳ, các nút khác vẫn bấm được), widget.
-- 🎯 _Xong khi:_ chạy trọn kịch bản demo.
+- [ ] Hàm mô phỏng CPU nặng, không cần dữ liệu DB, có tham số điều chỉnh để chạy khoảng 2 đến 3 giây (vòng lặp tính toán, đếm số nguyên tố, băm lặp nhiều vòng, tuỳ bạn chọn). Đo thử để đủ chậm.
+- [ ] **Bản sync:** viết là `async def` chứa tính toán blocking, nên chặn event loop. Lưu ý: nếu viết `def` thường thì FastAPI đẩy vào thread pool và `/health` sẽ không đứng, demo mất tác dụng.
+- [ ] **Bản `BackgroundTasks`:** hàm tính toán là `def` (sync), trả `202` kèm `job_id`, dict trong bộ nhớ lưu trạng thái (`PENDING`, `RUNNING`, `DONE`), có endpoint hỏi trạng thái.
+- [ ] Chạy `uvicorn --workers 1`.
+- [ ] Kiểm tra BE bằng vòng lặp `curl /health` mỗi 0,5 giây: bản sync im lặng, bản background vẫn in đều. Quay video.
+- [ ] React: nút xuất báo cáo (trạng thái, polling), tab GET phía dưới vẫn bấm được ở bản background và treo ở bản sync.
+- [ ] Ghi lại bảng thời gian đo được cho Word và slide.
+- [ ] _(Tùy chọn)_ Demo 3: tab riêng, busy-wait **có thời hạn**, tuyệt đối không dùng `while(true)`, có video dự phòng.
+- 🎯 _Xong khi:_ cùng một FE, đổi BE thì trải nghiệm khác hẳn.
 
 ### ⬜ Bước 8 — Đóng gói Docker đầy đủ
 
-- [ ] Thêm hai service: BE (Dockerfile, `uvicorn`) và FE (build nhiều giai đoạn, nginx, chuyển tiếp `/api` sang BE).
+- [ ] Thêm hai service: BE (Dockerfile, `uvicorn --workers 1`) và FE (build nhiều giai đoạn, nginx, chuyển tiếp `/api` sang BE).
 - [ ] Compose có `healthcheck` cho DB và một lệnh seed.
 - [ ] Thử `docker compose down -v` rồi dựng lại, tốt nhất trên máy sạch.
 - 🎯 _Xong khi:_ một lệnh dựng cả hệ thống.
 
 ### ⬜ Bước 9 — Hoàn thiện Word, slide, tập dượt
 
-- [ ] Quay sẵn video demo dự phòng phòng khi demo lỗi.
+- [ ] Quay video demo dự phòng.
+- [ ] Học thuộc câu chốt trên slide (`suy_luan.md`, mục 5) và câu trả lời cho _"Sao không demo browser freeze thật?"_.
 - 🎯 _Xong khi:_ có bản chạy thử trọn vẹn trước ngày thuyết trình.
 
 ---
 
-## 5. 🗺️ UML cho lát cắt
+## 5. 🗺️ Sơ đồ: chỉ dùng lại và đổi tên
 
-> ✏️ Không vẽ lại từ đầu, chỉ lọc từ cái đã có rồi bổ sung. Vẽ song song bước 2 đến 3, rồi chỉnh lại cho khớp code.
+> ✏️ Không vẽ mới. Dùng bộ sơ đồ của nhóm (`02-so-do-uml.md`, ERD trong `04`), chỉ đổi tên cho khớp code.
 
-### ♻️ Dùng lại
+| Sơ đồ                    | Việc cần làm                                                                                                            |
+| :----------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| Use Case tổng quát       | Giữ nguyên nội dung, đổi tên nếu có định danh kỹ thuật                                                                  |
+| Class diagram            | Đổi tên lớp và thuộc tính theo mục 0 của `04` (ví dụ `NhomTieuLuan` → `EssayGroup`, `HoSoDangKy` → `TopicRegistration`) |
+| ERD (3 sơ đồ trong `04`) | Đã đổi tên trong bản `04` mới                                                                                           |
+| 2 Tuần tự, 2 Hoạt động   | Chỉ đổi tên định danh nếu có                                                                                            |
 
-- **Use Case tổng quát:** giữ nguyên, tô đậm hoặc viền đậm use case thuộc lát cắt (Đăng nhập, Xem danh sách hồ sơ, Gửi hồ sơ đăng ký, Xuất báo cáo thống kê), để xám phần chưa làm, thêm ô chú thích _"đậm = phạm vi demo, xám = để sau"_. Có thể vẽ thêm một Use Case nhỏ chỉ gồm 4 use case này cho slide. `Có thể vẽ mới riêng nếu cần.`
-- **Activity đầy đủ:** chỉ lấy luồng gửi hồ sơ đăng ký.
-
-### 🆕 Vẽ mới
-
-- Activity cho luồng xuất báo cáo.
-- Class diagram của lát cắt: `Account`, `CourseSection`, `TopicRegistration`, Repository, Service (tên tiếng Anh).
-- ERD cho 4 đến 5 bảng.
-- Sequence (quan trọng nhất): báo cáo đồng bộ so với async (client, API, tác vụ nền, DB), và luồng gọi API ngoài bằng `httpx`.
-- Deployment (nginx, BE, DB trong Docker Compose), nếu muốn có hình cho phần Docker.
-
-> 🚨 **Mức tối thiểu nếu thiếu thời gian:** Use Case đánh dấu, Class, ERD, hai Sequence và một Activity cho xuất báo cáo.
+> 🧩 Sơ đồ so sánh sync/async không vẽ; trong Word dùng bảng thời gian đo được và kết quả `curl /health` thay thế.
 
 ---
 
 ## 6. 📝 Cấu trúc Word: lý thuyết đi cùng thực hành
 
-> 🔁 Mỗi nội dung theo vòng: **lý thuyết → sơ đồ → đoạn code chính → kết quả demo**. Viết từng phần ngay khi phần code tương ứng chạy được, để có số liệu thật. Phần UML và mô tả lát cắt đặt ngắn ở đầu, làm bối cảnh.
+> 🔁 Mỗi nội dung theo vòng: **lý thuyết → sơ đồ → đoạn code chính → kết quả demo**. Viết từng phần ngay khi phần code tương ứng chạy được.
 
-| 📚 Phần               | 🧠 Lý thuyết                                                                                                              | 🛠️ Thực hành tương ứng                                   |
-| :-------------------- | :------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------- |
-| **Đa luồng và async** | thread, async, process; vì sao FastAPI chọn async cho việc chờ I/O; event loop; I/O-bound và CPU-bound; vì sao UI bị treo | báo cáo đồng bộ so với async, kèm bảng thời gian đo được |
-| **API ngoài, JSON**   | HTTP client bất đồng bộ, serialize/deserialize, validate bằng Pydantic                                                    | widget `httpx.AsyncClient` và schema Pydantic            |
-| **ORM, tầng DAL**     | Repository, Service, tách tầng trong OOP                                                                                  | lớp Repository với SQLAlchemy async                      |
-| **JWT**               | cấu trúc token, xác thực không trạng thái                                                                                 | đăng nhập, dependency kiểm tra token                     |
-| **Docker**            | image, container, compose                                                                                                 | một lệnh dựng cả hệ thống                                |
+| 📚 Phần               | 🧠 Lý thuyết                                                                                                | 🛠️ Thực hành tương ứng                          |
+| :-------------------- | :---------------------------------------------------------------------------------------------------------- | :---------------------------------------------- |
+| **ORM, tầng DAL**     | Repository, tách tầng trong OOP, generic                                                                    | `BaseRepository` với SQLAlchemy async, 14 model |
+| **API ngoài, JSON**   | HTTP client bất đồng bộ, serialize/deserialize, validate bằng Pydantic                                      | schema `Read`, widget `httpx.AsyncClient`       |
+| **Đa luồng và async** | thread, async, process; event loop; I/O-bound và CPU-bound; vì sao UI treo; GIL; đơ kỹ thuật và đơ cảm nhận | Demo 1, Demo 2, bảng thời gian đo được          |
+| **Docker**            | image, container, compose                                                                                   | một lệnh dựng cả hệ thống                       |
 
-> ✍️ Đoạn lý thuyết đa luồng nên viết sau bước 4, khi đã tự thấy khác biệt. Hệ thống thật thường dùng hàng đợi như Celery hoặc RQ, chỉ cần nhắc tới trong lý thuyết.
+> ✍️ Đoạn lý thuyết đa luồng nên viết sau bước 5, khi đã tự thấy khác biệt. Hệ thống thật thường dùng hàng đợi như Celery hoặc RQ, chỉ cần nhắc tới.
 
 ---
 
-## 7. 🔐 JWT và Docker: làm vừa đủ
-
-> 🚧 **JWT** không phải nội dung chính, đừng để nó ngốn thời gian.
-
-### 🪙 JWT
-
-| Mức                                     | Nội dung                                                                                                                                                                                 |
-| :-------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Bản tối thiểu (bước 3)**              | Endpoint đăng nhập, access token ngắn hạn (khoảng 15 phút), dependency kiểm tra token, mật khẩu băm bằng bcrypt hoặc argon2. FE tạm lưu bằng `localStorage`.                             |
-| **Bản nâng cấp (chỉ khi dư thời gian)** | Refresh token lưu băm và hạn dùng trong bảng `refresh_tokens`, bản gốc nằm trong cookie `httpOnly`; access token giữ trong bộ nhớ React; axios interceptor tự xin token mới khi hết hạn. |
-
-> ⚠️ Trong Docker không cần HTTPS thật. Để nginx phục vụ FE và chuyển tiếp `/api` sang BE, khi đó FE và API cùng origin nên cookie đỡ rắc rối. Chưa chắc cookie `Secure` chạy ổn trên mọi trình duyệt khi dùng `http://localhost`, cần thử thật khi tới bước này.
-
-### 🐳 Docker
+## 7. 🐳 Docker: làm vừa đủ
 
 | Giai đoạn         | Nội dung                                        |
 | :---------------- | :---------------------------------------------- |
 | **Sớm (bước 1)**  | Chỉ container PostgreSQL kèm volume.            |
 | **Cuối (bước 8)** | Thêm BE và FE, `healthcheck` cho DB, lệnh seed. |
 
-<div align="center">
+---
 
-### ✨ This file was made by Deepseek AI ✨
+## 8. ✂️ Quy tắc cắt giảm
 
-</div>
+- Dừng thêm tính năng khoảng **3 ngày** trước thuyết trình để tập dượt.
+- Nếu trễ, cắt theo thứ tự: **Demo 3 → Alembic (dùng `create_all`) → giao diện đẹp**.
+- Nếu trễ ở khâu "đủ 14 bảng": giữ ORM và Repository cho tất cả bảng, bỏ GET endpoint của bảng phụ.
+- **Không cắt:** thí nghiệm async, Demo 1, Demo 2 (tác vụ nặng) và API ngoài.
