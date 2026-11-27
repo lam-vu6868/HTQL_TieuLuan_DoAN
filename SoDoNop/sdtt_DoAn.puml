@@ -1,5 +1,5 @@
 @startuml
-title Đồ án tốt nghiệp — Gửi và duyệt đề tài
+
 skinparam defaultFontSize 18
 actor "Sinh viên" as SV
 participant "Giao diện\nReact" as FE
@@ -8,27 +8,27 @@ database "PostgreSQL" as DB
 actor "Giảng viên\nđược chọn" as GV
 
 == Gửi đề xuất ==
-SV -> FE: Chọn đợt và giảng viên,\nnhập tên và mô tả đề tài
-FE -> API: Gửi hồ sơ Đồ án
-API -> DB: Kiểm tra đợt, hạn đăng ký\nvà hồ sơ đang xử lý của sinh viên
-DB --> API: Kết quả kiểm tra
+SV -> FE: 1. Chọn đợt và giảng viên,\nnhập tên và mô tả đề tài
+FE -> API: 2. Gửi hồ sơ Đồ án
+API -> DB: 3. Kiểm tra đợt, hạn đăng ký\nvà hồ sơ đang xử lý của sinh viên
+DB --> API: 4. Kết quả kiểm tra
 alt Hợp lệ
-  API -> DB: Lưu CHO_DUYET cùng\ngiảng viên được chọn
+  API -> DB: 5.1 Lưu CHO_DUYET cùng\ngiảng viên được chọn
   API --> FE: Mã hồ sơ
 else Không hợp lệ
-  API --> FE: Lý do không nhận hồ sơ
+  API --> FE: 5.2 Lý do không nhận hồ sơ
 end
 
 == Giảng viên xét duyệt ==
-GV -> FE: Mở hồ sơ gửi đến mình
-FE -> API: Gửi quyết định và nhận xét
-API -> DB: Kiểm tra đúng giảng viên, trạng thái\nvà sinh viên chưa có GVHD
+GV -> FE: 6. Mở hồ sơ gửi đến mình
+FE -> API: 7. Gửi quyết định và nhận xét
+API -> DB: 8. Kiểm tra đúng giảng viên, trạng thái\nvà sinh viên chưa có GVHD
 alt Đồng ý hướng dẫn
-  API -> DB: Tạo phân công GVHD, gắn hồ sơ\nvà ghi DA_DUYET trong một giao dịch
+  API -> DB: 9.1 Tạo phân công GVHD, gắn hồ sơ\nvà ghi DA_DUYET trong một giao dịch
 else Từ chối
-  API -> DB: Cập nhật TU_CHOI và lý do
+  API -> DB: 9.2 Cập nhật TU_CHOI và lý do
 end
-API --> FE: Trạng thái hồ sơ mới
+API --> FE: 10. Trạng thái hồ sơ mới
 note over SV,FE
   Nếu bị từ chối, trong hạn đăng ký
   có thể sửa hồ sơ cũ hoặc tạo hồ sơ mới,
