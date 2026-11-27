@@ -1,0 +1,16 @@
+# API FastAPI và máy chủ chạy ứng dụng.
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+
+# ORM, psycopg 3 hỗ trợ async và migration (không cần asyncpg).
+SQLAlchemy[asyncio]>=2.0,<3
+psycopg[binary]>=3.2,<4
+alembic>=1.18,<2
+
+# Đọc .env, JWT và băm mật khẩu bằng Argon2.
+pydantic-settings>=2.5,<3
+PyJWT>=2.9,<3
+pwdlib[argon2]>=0.2,<1
+
+# Nhận file báo cáo qua multipart/form-data.
+python-multipart>=0.0.20,<1

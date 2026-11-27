@@ -1,0 +1,90 @@
+# ---------- Bí mật & biến môi trường ----------
+# KHÔNG commit: chứa DB password, JWT secret...
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+
+# ---------- Backend: Python / FastAPI ----------
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Môi trường ảo
+venv/
+.venv/
+env/
+ENV/
+
+# Cache công cụ
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.cache/
+
+# File người dùng upload (bài nộp, báo cáo) - đổi tên nếu BE dùng thư mục khác
+BE/uploads/
+BE/storage/
+BE/media/
+
+# ---------- Frontend: React ----------
+node_modules/
+FE/build/
+FE/dist/
+FE/.vite/
+FE/.cache/
+FE/coverage/
+.eslintcache
+
+# Log của npm/yarn/pnpm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- Database ----------
+# Dữ liệu thật của PostgreSQL (nếu mount volume về máy)
+DB/data/
+DB/pgdata/
+postgres-data/
+pgdata/
+
+# Bản backup/dump; giữ lại file schema/migration/seed trong DB/ nếu cần commit
+*.dump
+*.backup
+*.bak
+DB/backup/
+DB/backups/
+
+# SQLite dùng tạm khi dev
+*.sqlite
+*.sqlite3
+*.db
+
+# ---------- Docker ----------
+docker-compose.override.yml
+
+# ---------- Log ----------
+*.log
+logs/
+
+# ---------- IDE / Editor ----------
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# ---------- Hệ điều hành ----------
+.DS_Store
+Thumbs.db
+desktop.ini

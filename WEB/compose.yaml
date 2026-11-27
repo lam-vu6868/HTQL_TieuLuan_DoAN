@@ -3,8 +3,8 @@ services:
     image: postgres:16
     environment:
       POSTGRES_DB: httt07
-      POSTGRES_USER: httt07
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-httt07_dev}
+      POSTGRES_USER: admin_anh
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-httt07-dev-anh}
     ports:
       - "127.0.0.1:5434:5432"
     volumes:
