@@ -8,27 +8,27 @@ database "PostgreSQL" as DB
 actor "Giảng viên\nphụ trách lớp" as GV
 
 == Gửi hồ sơ ==
-SV -> FE: Nhập tên và mô tả đề tài
-FE -> API: Gửi hồ sơ Tiểu luận
-API -> DB: Kiểm tra lớp, hạn đăng ký,\nngười gửi và nhóm
-DB --> API: Kết quả kiểm tra
+SV -> FE: 1. Nhập tên và mô tả đề tài
+FE -> API: 2. Gửi hồ sơ Tiểu luận
+API -> DB: 3. Kiểm tra lớp, hạn đăng ký,\nngười gửi và nhóm
+DB --> API: 4. Kết quả kiểm tra
 alt Hợp lệ
-  API -> DB: Lưu hồ sơ CHO_DUYET
-  API --> FE: Mã hồ sơ
+  API -> DB: 5.1.1 Lưu hồ sơ CHO_DUYET
+  API --> FE: 5.1.2 Mã hồ sơ
 else Không hợp lệ
-  API --> FE: Lý do không nhận hồ sơ
+  API --> FE: 5.2 Lý do không nhận hồ sơ
 end
 
 == Giảng viên duyệt ==
-GV -> FE: Mở hồ sơ chờ duyệt
-FE -> API: Gửi quyết định và nhận xét
-API -> DB: Kiểm tra giảng viên phụ trách\nvà trạng thái hồ sơ
+GV -> FE: 6. Mở hồ sơ chờ duyệt
+FE -> API: 7. Gửi quyết định và nhận xét
+API -> DB: 8. Kiểm tra giảng viên phụ trách\nvà trạng thái hồ sơ
 alt Duyệt
-  API -> DB: Cập nhật DA_DUYET
+  API -> DB: 9.1 Cập nhật DA_DUYET
 else Từ chối
-  API -> DB: Cập nhật TU_CHOI và lý do
+  API -> DB: 9.2 Cập nhật TU_CHOI và lý do
 end
-API --> FE: Trạng thái hồ sơ mới
+API --> FE: 10. Trạng thái hồ sơ mới
 note over SV,FE
   Nếu bị từ chối, trong hạn đăng ký
   có thể sửa hồ sơ cũ hoặc tạo hồ sơ mới để gửi lại.
