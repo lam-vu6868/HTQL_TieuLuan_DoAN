@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: httt07
+      POSTGRES_USER: admin_anh
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-httt07-dev-anh}
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
